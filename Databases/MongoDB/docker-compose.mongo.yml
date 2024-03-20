@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo
+    container_name: LC_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USR}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}
+    ports:
+      - '27017:27017'
+    volumes:
+      # - ./mongoDbLocalStorage:/data/db       # starting from windows
+      - ./mongoDbLocalStorage:/var/lib/mongodb # starting from linux
+
