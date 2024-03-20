@@ -2,7 +2,7 @@ version: '3.8'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    container_name: elasticsearch
+    container_name: LC_elasticsearch
     volumes:
       - ./elasticsearch-data:/usr/share/elasticsearch/data
     ports:
@@ -18,7 +18,7 @@ services:
     depends_on:
       - elasticsearch
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
-    container_name: kibana
+    container_name: LC_kibana
     volumes:
       - ./kibana-data:/usr/share/kibana/data
     ports:
