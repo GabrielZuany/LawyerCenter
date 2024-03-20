@@ -1,0 +1,15 @@
+version: '3'
+services:
+  LCpgsql:
+    container_name: LC_pgsql
+    image: postgres:${PG_VERSION}
+    environment:
+      POSTGRES_USER: ${PG_USR}
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_PASSWORD: ${PG_PWD}
+    volumes:
+      - ./pgdata:/usr/local/var/postgres/data
+    ports:
+      - "5432:5432"
+volumes: 
+  pgdata:
