@@ -4,3 +4,4 @@ kibana-data
 assets
 pgdata
 mongoDbLocalStorage
+airflow_container
