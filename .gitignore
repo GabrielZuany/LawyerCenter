@@ -5,3 +5,6 @@ assets
 pgdata
 mongoDbLocalStorage
 airflow_container
+__pycache__
+**/logs/*/
+airflow
