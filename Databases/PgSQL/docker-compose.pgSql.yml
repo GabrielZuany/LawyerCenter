@@ -8,6 +8,8 @@ services:
       POSTGRES_DB: ${PG_DB}
       POSTGRES_PASSWORD: ${PG_PWD}
     volumes:
-      - ./pgdata:/var/lib/postgresql
+      - ./pgdata:/usr/local/var/postgres/data
     ports:
       - "5432:5432"
+volumes: 
+  pgdata:
