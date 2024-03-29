@@ -3,7 +3,7 @@ create table clientlawyer(
 	lawyerId uuid references lawyer(id) ,
 	clientId uuid references client(id),
 	relationCreatedIn date not null
-)PARTITION BY HASH (lawyerId);
+);
 
 CREATE INDEX idx_client ON clientlawyer(clientId);
 
