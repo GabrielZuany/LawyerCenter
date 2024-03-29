@@ -6,4 +6,4 @@ create table lawyerCategory(
 );
 
 insert into lawyerCategory(id, typeInt, alias, registrationDate)
-values(gen_random_uuid(), 1, 'Tributário', current_date);
+values('93ecdf50-9cb8-40a2-ab53-7e1b8874fa08', 1, 'Tributário', current_date);
