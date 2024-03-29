@@ -9,9 +9,9 @@ create table lawyer(
 	state varchar(2) not null,
 	registrationDate date not null,
 	lastUpdate date
-)PARTITION BY HASH(lawyerCategoryId); -- partition by lawyerCategoryId to improve query performance when filtering by lawyerCategoryId
+);
 
-ALTER TABLE lawyer CREATE INDEX idx_lawyer_id ON lawyer(id); -- number of lawyers is small, so we can use hash partitioning
+CREATE INDEX idx_lawyer_id ON lawyer(id);
 
-insert into lawyer(id, name, professionalId, postalcode, country, city, state, registrationDate, lastUpdate)
-values('e0e1b721-172e-49a2-bdfb-eb2be627ff98', 'test_user', 'UF 999999', gen_random_uuid(), 'xxxxxxxx', 'Brasil', 'Vitoria', 'ES', current_date, null);
+insert into lawyer(id, name, professionalId, lawyerCategoryId, postalcode, country, city, state, registrationDate, lastUpdate)
+values('e0e1b721-172e-49a2-bdfb-eb2be627ff98', 'test_user', 'UF 999999', '93ecdf50-9cb8-40a2-ab53-7e1b8874fa08', 'xxxxxxxx', 'Brasil', 'Vitoria', 'ES', current_date, null);

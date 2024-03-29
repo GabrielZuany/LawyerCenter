@@ -10,7 +10,7 @@ create table client(
 	lastUpdate date
 );
 
-ALTER TABLE client CREATE INDEX idx_client_id ON client(id);
+CREATE INDEX idx_client_id ON client(id);
 
 insert into client(id, name, usertype, postalcode, country, city, state, registrationDate, lastUpdate)
 -- values(gen_random_uuid(), 'test_user', 1, 'xxxxxxxx', 'Brasil', 'Vitoria', 'ES', current_date, null);
