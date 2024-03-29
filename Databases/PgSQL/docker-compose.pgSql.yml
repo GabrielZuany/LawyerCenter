@@ -8,8 +8,7 @@ services:
       POSTGRES_DB: ${PG_DB}
       POSTGRES_PASSWORD: ${PG_PWD}
     volumes:
-      - ./pgdata:/usr/local/var/postgres/data
+      - ./pgdata:/usr/local/var/postgres
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-volumes: 
-  pgdata:
