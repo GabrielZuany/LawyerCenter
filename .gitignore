@@ -8,3 +8,8 @@ airflow_container
 __pycache__
 **/logs/*/
 airflow
+.vs
+.vscode
+obj
+bin
+launchSettings.json
