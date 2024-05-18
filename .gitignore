@@ -13,3 +13,4 @@ airflow
 obj
 bin
 launchSettings.json
+node_modules
