@@ -35,22 +35,15 @@ namespace API.Model
 
         public Lawyer(string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
         {
-            if(name == null || cpf == null || professionalId == null || 
-            lawyerCategoryId == Guid.Empty || postalcode == null || 
-            country == null || state == null || city == null) 
-            {
-                // log using serilog
-                throw new ArgumentNullException();
-            }
             Id = Guid.NewGuid();
-            Name = name;
-            Cpf = cpf;
-            ProfessionalId = professionalId;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Cpf = cpf ?? throw new ArgumentNullException(nameof(cpf));
+            ProfessionalId = professionalId ?? throw new ArgumentNullException(nameof(professionalId));
             LawyerCategoryId = lawyerCategoryId == Guid.Empty ? throw new ArgumentNullException(nameof(lawyerCategoryId)) : lawyerCategoryId;
-            Postalcode = postalcode;
-            Country = country;
-            State = state;
-            City = city;
+            Postalcode = postalcode ?? throw new ArgumentNullException(nameof(postalcode));
+            Country = country ?? throw new ArgumentNullException(nameof(country));
+            State = state ?? throw new ArgumentNullException(nameof(state));
+            City = city ?? throw new ArgumentNullException(nameof(city));
             RegistrationDate = registrationDate == DateTime.MinValue ? throw new ArgumentNullException(nameof(registrationDate)) : registrationDate;
             LastUpdate = lastUpdate;
             Photo = photo;
