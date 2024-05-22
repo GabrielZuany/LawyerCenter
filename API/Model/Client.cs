@@ -45,9 +45,5 @@ namespace API.Model
             LastUpdate = lastUpdate;
             Photo = photo;
         }
-
-        public Client()
-        {
-        }
     }
 }
