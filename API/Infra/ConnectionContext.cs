@@ -9,6 +9,7 @@ namespace API.Infra
         // DbSet is a collection of entities that can be queried. Maps to a table in the database.
         public DbSet<Lawyer> Lawyers { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<SystemUser> SystemUsers { get; set; }
         public string Host {get; private set;}
         public string Database {get; private set;}
         public string Username {get; private set;}

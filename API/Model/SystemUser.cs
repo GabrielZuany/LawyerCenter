@@ -14,19 +14,19 @@ namespace API.Model
         [Column("password")]
         public string Password { get; private set; }
         [Column("usertype")]
-        public string Role { get; private set; }
+        public int Role { get; private set; }
 
         [Column("registrationdate")]
         public DateTime RegistrationDate { get; private set; }
         [Column("lastupdate")]
         public DateTime? LastUpdate { get; private set; }
 
-        public SystemUser(string email, string password, string role, DateTime registrationDate, DateTime? lastUpdate)
+        public SystemUser(string email, string password, int role, DateTime registrationDate, DateTime? lastUpdate)
         {
             Id = Guid.NewGuid();
             Email = email ?? throw new ArgumentNullException(nameof(email));
             Password = password ?? throw new ArgumentNullException(nameof(password));
-            Role = role ?? throw new ArgumentNullException(nameof(role));
+            Role = role != 1 && role != 2 ? throw new ArgumentOutOfRangeException(nameof(role)) : role;
             RegistrationDate = registrationDate == DateTime.MinValue ? throw new ArgumentNullException(nameof(registrationDate)) : registrationDate;
             LastUpdate = lastUpdate;
         }
