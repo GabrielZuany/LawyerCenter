@@ -6,7 +6,7 @@ namespace API.Infra.Repository
 {
     class SystemUserRepository : ISystemUserRepository
     {
-        private readonly ConnectionContext _context;
+        private readonly ConnectionContext _context = new ConnectionContext();
 
         public SystemUserRepository(ConnectionContext context)
         {

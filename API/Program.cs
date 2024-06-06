@@ -5,6 +5,7 @@ using System.Text;
 using API.Infra.Repository;
 using API.Repository.Interfaces;
 using API.Infra;
+using Renci.SshNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,25 +17,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-// var host = System.Environment.GetEnvironmentVariable("PGSQL_HOST");
-// int port = int.Parse(System.Environment.GetEnvironmentVariable("PGSQL_PORT")!);
-// var database = System.Environment.GetEnvironmentVariable("PGSQL_DB");
-// var password = System.Environment.GetEnvironmentVariable("PGSQL_PWD");
-// var username = System.Environment.GetEnvironmentVariable("PGSQL_USER");
+// PORT FORWARDING SETUP
+string sshHost = "168.138.151.184";
+string sshUsername = "ubuntu";
+string sshKeyFilePath = "/home/zuany/Desktop/dev/auth/oracle/api/key";
+string sshPassphrase = "select*from:Zuzu.pwd.2405";
+string localHost = "localhost"; // Local host where the forwarded port will be available
+int localPort = 5432; // Local port where the forwarded traffic will be received
+string remoteHost = "localhost";
+int remotePort = 5432; // Port on the remote host where the forwarded traffic will be sent
 
-// System.Console.WriteLine($"Host: {host}");
-// System.Console.WriteLine($"Port: {port}");
-// System.Console.WriteLine($"Database: {database}");
-// System.Console.WriteLine($"Password: {password}");
-// System.Console.WriteLine($"Username: {username}");
+// Register the PortForwardingService with parameters
+builder.Services.AddTransient(provider =>
+{
+    return new PortForwardingService(sshHost, sshUsername, sshKeyFilePath, sshPassphrase, localHost, localPort, remoteHost, remotePort);
+});
 
-var host = "localhost";
-int port = 5432;
-var database = "lawyercenter";
-var password = "minha_senha_forte_123";
-var username = "lawyercenter_aka_ifood_advogado";
 
-builder.Services.AddTransient<ConnectionContext>(s => new ConnectionContext(host, database, username, password, port));
+builder.Services.AddDbContext<ConnectionContext>();
 builder.Services.AddTransient<ISystemUserRepository, SystemUserRepository>();
 
 var app = builder.Build();
@@ -51,5 +51,18 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Start the port forwarding service
+var portForwardingService = app.Services.GetRequiredService<PortForwardingService>();
+try
+{
+    portForwardingService.StartPortForwarding();
+    Console.WriteLine("Port forwarding started successfully.");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error starting port forwarding: {ex.Message}");
+    throw;
+}
 
 app.Run();
