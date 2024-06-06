@@ -3,10 +3,11 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   align-items: center;
+  align-content: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 10px;
-  height: 100vh;
+  flex-direction: row;
+  gap: 200px;
+  height: 90vh;
 `;
 
 export const Content = styled.div`
@@ -19,8 +20,8 @@ export const Content = styled.div`
   box-shadow: 0 1px 2px #0003;
   background-color: white;
   max-width: 350px;
-  padding: 20px;
-  border-radius: 5px;
+  padding: 30px;
+  border-radius: 10px;
 `;
 
 export const Label = styled.label`
@@ -47,3 +48,21 @@ export const Strong = styled.strong`
     color: #676767;
   }
 `;
+
+export const Logozinho = styled.img`
+  width: 170px; /* Defina a largura desejada */
+  height: 32px; /* Mantém a proporção da imagem */
+  display: block; /* Garante que a imagem seja um bloco */
+  margin-left: 0px;/
+  margin-top: 0px;
+`;
+
+export const Logo_centro = styled.img`
+  width: 214px; /* Defina a largura desejada */
+  height: 670px; /* Mantém a proporção da imagem */
+  display: block; /* Garante que a imagem seja um bloco */
+  margin-left: 0px;
+  margin-top: 0px;
+`;
+
+ 
