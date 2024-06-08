@@ -12,7 +12,7 @@ namespace API.Infra
         public DbSet<SystemUser> SystemUsers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var host = "localhost";
+            var host = "127.0.0.1";
             int port = 5432;
             var database = "lawyercenter";
             var password = "minha_senha_forte_123";
