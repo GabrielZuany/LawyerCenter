@@ -6,6 +6,7 @@ using API.Infra.Repository;
 using API.Repository.Interfaces;
 using API.Infra;
 using Renci.SshNet;
+using API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ConnectionContext>();
-builder.Services.AddTransient<ISystemUserRepository, SystemUserRepository>();
+builder.Services.AddTransient<ILawyerRepository, LawyerRepository>();
 
 var app = builder.Build();
 

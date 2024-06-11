@@ -31,7 +31,11 @@ namespace API.Model
         [Column("lastupdate")]
         public DateTime? LastUpdate { get; private set; }
         [Column("photo")]
-        public string? Photo { get; private set; } // picture path on server ----> add this column in table (doesn't exist yet)
+        public string? Photo { get; private set; }
+        [Column("email")]
+        public string Email { get; private set; }
+        [Column("password")]
+        public string Password { get; private set; }
 
         public Lawyer(string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
         {
