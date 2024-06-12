@@ -1,26 +1,31 @@
 using API.Infra;
 using API.Model;
 using API.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Infra.Repository
 {
     public class LawyerRepository : ILawyerRepository
     {
         private readonly ConnectionContext _context = new ConnectionContext();
-        public void Create(Lawyer lawyer){
+        public Task Create(Lawyer lawyer){
             _context.Add(lawyer);
-            _context.SaveChanges();
+            return _context.SaveChangesAsync();
         }
-        public Lawyer? Get(string email, string cpf, string password){
-            return _context.Lawyers.FirstOrDefault(l => l.Cpf == cpf && l.Email == email && l.Password == password);
+        public async Task<Lawyer?> Get(string? email, string? cpf, string password){
+            if (email == null)
+                return await _context.Lawyers.FirstOrDefaultAsync(l => l.Cpf == cpf && l.Password == password);
+            if (cpf == null)
+                return await _context.Lawyers.FirstOrDefaultAsync(l => l.Email == email && l.Password == password);
+            return await _context.Lawyers.FirstOrDefaultAsync(l => l.Cpf == cpf && l.Email == email && l.Password == password);
         }
-        public void Update(Lawyer lawyer){
+        public async Task Update(Lawyer lawyer){
             _context.Update(lawyer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Delete(Lawyer lawyer){
+        public Task Delete(Lawyer lawyer){
             _context.Remove(lawyer);
-            _context.SaveChanges();
+            return _context.SaveChangesAsync();
         }
     }
 }

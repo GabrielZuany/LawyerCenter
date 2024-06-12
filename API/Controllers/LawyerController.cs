@@ -25,7 +25,7 @@ namespace API.Controllers
         {
             try
             {
-                var lawyer = new Lawyer(lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now, null, lawyerViewModel.Photo);
+                var lawyer = new Lawyer(Guid.NewGuid(), lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now.ToUniversalTime(), null, lawyerViewModel.Photo);
                 _lawyerRepository.Create(lawyer);
                 return Ok();
             }catch(Exception e)
@@ -36,12 +36,13 @@ namespace API.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Update([FromBody]LawyerViewModel lawyerViewModel)
+        public async Task<IActionResult> Update([FromBody]LawyerViewModel lawyerViewModel)
         {
             try
             {
-                var lawyer = new Lawyer(lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now, DateTime.Now, lawyerViewModel.Photo);
-                _lawyerRepository.Update(lawyer);
+                var old = await _lawyerRepository.Get(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+                var lawyer = new Lawyer(old!.Id, lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, old!.RegistrationDate.ToUniversalTime(), DateTime.Now.ToUniversalTime(), lawyerViewModel.Photo);
+                await _lawyerRepository.Update(lawyer);
                 return Ok();
             }catch(Exception e)
             {
@@ -51,12 +52,12 @@ namespace API.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete([FromBody]LawyerViewModel lawyerViewModel)
+        public async Task<IActionResult> Delete([FromBody]LawyerViewModel lawyerViewModel)
         {
             try
             {
-                var lawyer = new Lawyer(lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now, null, lawyerViewModel.Photo);
-                _lawyerRepository.Delete(lawyer);
+                var old = await _lawyerRepository.Get(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+                await _lawyerRepository.Delete(old!);
                 return Ok();
             }catch(Exception e)
             {
@@ -66,9 +67,9 @@ namespace API.Controllers
         }
 
         [HttpPut("get")]
-        public IActionResult Get(string email, string cpf, string password)
+        public async Task<IActionResult> Get(string email, string cpf, string password)
         {
-            var lawyer = _lawyerRepository.Get(email, cpf, password);
+            var lawyer = await _lawyerRepository.Get(email, cpf, password);
             if(lawyer == null)
             {
                 _logger.LogError("Lawyer not found!");

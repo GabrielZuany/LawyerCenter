@@ -37,9 +37,9 @@ namespace API.Model
         [Column("password")]
         public string Password { get; private set; }
 
-        public Lawyer(string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
+        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Cpf = cpf ?? throw new ArgumentNullException(nameof(cpf));
             ProfessionalId = professionalId ?? throw new ArgumentNullException(nameof(professionalId));

@@ -8,6 +8,10 @@ namespace API.ViewModel
         public string Name { get; set; }
         [Display(Name = "cpf")]
         public string Cpf { get; set; }
+        [Display(Name = "email")]
+        public string Email { get; set; }
+        [Display(Name = "password")]
+        public string Password { get; set; }
         [Display(Name = "professionalid")]
         public string ProfessionalId { get; set; }
         [Display(Name = "lawyercategoryid")]
