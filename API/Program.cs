@@ -18,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ConnectionContext>();
+builder.Services.AddTransient<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<ILawyerRepository, LawyerRepository>();
 
 var app = builder.Build();
