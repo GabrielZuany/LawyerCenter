@@ -9,29 +9,29 @@ namespace API.Model
     {
         [Key]
         [Column("id")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
         [Column("name")]
-        public string Name { get; private set; }
+        public string Name { get; set; }
         [Column("cpf")]
-        public string Cpf { get; private set; }
+        public string Cpf { get; set; }
         [Column("email")]
-        public string Email { get; private set; }
+        public string Email { get; set; }
         [Column("password")]
-        public string Password { get; private set; }
+        public string Password { get; set; }
         [Column("postalcode")]
-        public string Postalcode { get; private set; }
+        public string Postalcode { get; set; }
         [Column("country")]
-        public string Country { get; private set; }
+        public string Country { get; set; }
         [Column("state")]
-        public string State { get; private set; }
+        public string State { get; set; }
         [Column("city")]
-        public string City { get; private set; }
+        public string City { get; set; }
         [Column("registrationdate")]
-        public DateTime RegistrationDate { get; private set; }
+        public DateTime RegistrationDate { get; set; }
         [Column("lastupdate")]
-        public DateTime? LastUpdate { get; private set; }
+        public DateTime? LastUpdate { get; set; }
         [Column("photo")]
-        public string? Photo { get; private set; } 
+        public string? Photo { get; set; } 
         
         public Client(Guid id, string name, string cpf, string email, string password, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
         {
