@@ -14,8 +14,6 @@ namespace API.ViewModel
         public string Password { get; set; }
         [Display(Name = "professionalid")]
         public string ProfessionalId { get; set; }
-        [Display(Name = "lawyercategoryid")]
-        public Guid LawyerCategoryId { get; set; }
         [Display(Name = "postalcode")]
         public string Postalcode { get; set; }
         [Display(Name = "country")]
@@ -26,5 +24,6 @@ namespace API.ViewModel
         public string City { get; set; }
         [Display(Name = "photo")]
         public string? Photo { get; set; }
+        public int CategoryEnumIdentifier { get; set; }
     }
 }

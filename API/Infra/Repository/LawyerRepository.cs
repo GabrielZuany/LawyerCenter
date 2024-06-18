@@ -12,7 +12,7 @@ namespace API.Infra.Repository
             _context.Add(lawyer);
             return _context.SaveChangesAsync();
         }
-        public async Task<Lawyer?> Get(string? email, string? cpf, string password){
+        public async Task<Lawyer?> Login(string? email, string? cpf, string password){
             if (email == null)
                 return await _context.Lawyers.FirstOrDefaultAsync(l => l.Cpf == cpf && l.Password == password);
             if (cpf == null)

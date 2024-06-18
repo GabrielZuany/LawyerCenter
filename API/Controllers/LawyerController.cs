@@ -12,21 +12,30 @@ namespace API.Controllers
     public class LawyerController : ControllerBase
     {
         private readonly ILawyerRepository _lawyerRepository;
+        private readonly ILawyerCategoryRepository _lawyerCategoryRepository;
         private readonly ILogger<LawyerController> _logger;
 
-        public LawyerController(ILawyerRepository lawyerRepository, ILogger<LawyerController> logger)
+        public LawyerController(ILawyerRepository lawyerRepository, ILawyerCategoryRepository lawyerCategoryRepository, ILogger<LawyerController> logger)
         {
+            _lawyerCategoryRepository = lawyerCategoryRepository ?? throw new ArgumentNullException(nameof(lawyerCategoryRepository));
             _lawyerRepository = lawyerRepository ?? throw new ArgumentNullException(nameof(lawyerRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody]LawyerViewModel lawyerViewModel)
+        public async Task<IActionResult> Create([FromBody]LawyerViewModel lawyerViewModel)
         {
             try
             {
-                var lawyer = new Lawyer(Guid.NewGuid(), lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now.ToUniversalTime(), null, lawyerViewModel.Photo);
-                _lawyerRepository.Create(lawyer);
+                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryEnumIdentifier);  
+                if(lc == null)
+                {
+                    _logger.LogError("Lawyer category not found!");
+                    return StatusCode(500);
+                }
+                Guid categoryId = lc.Id;  
+                var lawyer = new Lawyer(Guid.NewGuid(), lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, categoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now.ToUniversalTime(), null, lawyerViewModel.Photo);
+                await _lawyerRepository.Create(lawyer);
                 return Ok();
             }catch(Exception e)
             {
@@ -40,8 +49,11 @@ namespace API.Controllers
         {
             try
             {
-                var old = await _lawyerRepository.Get(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
-                var lawyer = new Lawyer(old!.Id, lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lawyerViewModel.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, old!.RegistrationDate.ToUniversalTime(), DateTime.Now.ToUniversalTime(), lawyerViewModel.Photo);
+                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryEnumIdentifier);
+                var old = await _lawyerRepository.Login(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+
+                var lawyer = new Lawyer(old!.Id, lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lc?.Id ?? old!.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, old!.RegistrationDate.ToUniversalTime(), DateTime.Now.ToUniversalTime(), lawyerViewModel.Photo);
+
                 await _lawyerRepository.Update(lawyer);
                 return Ok();
             }catch(Exception e)
@@ -56,7 +68,7 @@ namespace API.Controllers
         {
             try
             {
-                var old = await _lawyerRepository.Get(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+                var old = await _lawyerRepository.Login(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
                 await _lawyerRepository.Delete(old!);
                 return Ok();
             }catch(Exception e)
@@ -69,7 +81,7 @@ namespace API.Controllers
         [HttpPut("get")]
         public async Task<IActionResult> Get(string email, string cpf, string password)
         {
-            var lawyer = await _lawyerRepository.Get(email, cpf, password);
+            var lawyer = await _lawyerRepository.Login(email, cpf, password);
             if(lawyer == null)
             {
                 _logger.LogError("Lawyer not found!");
