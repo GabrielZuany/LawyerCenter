@@ -85,6 +85,7 @@ export const ProfileCard = styled.div`
 `;
 
 export const ProfileImage = styled.img`
+  margin-top: -2vh;
   width: 20vh;
   height: 20vh;
   border-radius: 50%;

@@ -124,7 +124,7 @@ const Home = () => {
                 Leo Jardins
                 <C.ProfileDetails>32 anos</C.ProfileDetails>
                 <C.ProfileDetails>Vitória, Espírito Santo</C.ProfileDetails>
-                <C.Button onClick={() => window.location.href='/Profile'}>Visualizar Perfil</C.Button>
+                <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
               </C.ProfileName>
               <C.ProfileDescription>
                 Descrição breve sobre Leo Jardins ou sua experiência profissional Descrição breve sobre Leo Jardins ou sua experiência profissional Descrição breve sobre Leo Jardins ou sua experiência profissional
@@ -138,7 +138,7 @@ const Home = () => {
                   David Correa
                 <C.ProfileDetails>37 anos</C.ProfileDetails>
                 <C.ProfileDetails>Majur, Espírito Santo</C.ProfileDetails>
-                <C.Button onClick={() => window.location.href='/Profile'}>Visualizar Perfil</C.Button>
+                <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
               </C.ProfileName>
               <C.ProfileDescription>Descrição breve sobre David Correa ou sua experiência profissional.</C.ProfileDescription>
               
@@ -151,7 +151,7 @@ const Home = () => {
               Maicon 
               <C.ProfileDetails>37 anos</C.ProfileDetails>
               <C.ProfileDetails>Jaguare, Espírito Santo</C.ProfileDetails>
-              <C.Button onClick={() => window.location.href='/Profile'}>Visualizar Perfil</C.Button>
+              <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
             </C.ProfileName>
             <C.ProfileDescription>maicon eles nao ligam pra gente</C.ProfileDescription>
           </C.ProfileCard>
