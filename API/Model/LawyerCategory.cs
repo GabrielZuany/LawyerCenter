@@ -14,5 +14,12 @@ namespace API.Model
         public string Alias {get; set;}
         [Column("registrationdate")]
         public DateTime RegistrationDate {get; set;}
+
+        public LawyerCategory(Guid id, int typeInt, string alias, DateTime registrationDate){
+            Id = id;
+            TypeInt = typeInt;
+            Alias = alias;
+            RegistrationDate = registrationDate;
+        }
     }
 }

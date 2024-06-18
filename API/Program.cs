@@ -20,6 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ConnectionContext>();
 builder.Services.AddTransient<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<ILawyerRepository, LawyerRepository>();
+builder.Services.AddTransient<ILawyerCategoryRepository, LawyerCategoryRepository>();
+builder.Services.AddTransient<IClientLawyerRepository, ClientLawyerRepository>();
 
 var app = builder.Build();
 
