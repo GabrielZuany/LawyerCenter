@@ -64,11 +64,15 @@ namespace API.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> Delete([FromBody]LawyerViewModel lawyerViewModel)
+        public async Task<IActionResult> Delete(string email, string cpf, string password)
         {
             try
             {
-                var old = await _lawyerRepository.Login(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+                var old = await _lawyerRepository.Login(email, cpf, password);
+                if (old == null) {
+                    _logger.LogError("Lawyer not found!");
+                    return StatusCode(500);
+                }
                 await _lawyerRepository.Delete(old!);
                 return Ok();
             }catch(Exception e)
