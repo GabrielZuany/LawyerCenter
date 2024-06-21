@@ -138,7 +138,8 @@ const Home = () => {
                   David Correa
                 <C.ProfileDetails>37 anos</C.ProfileDetails>
                 <C.ProfileDetails>Majur, Espírito Santo</C.ProfileDetails>
-                <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
+                {/* MUDAR DEPOIS, ESTA INDO PARA A TELA DO ADVOGADO */}
+                <C.Button onClick={() => navigate('/lawyerHome')}>Visualizar Perfil</C.Button>
               </C.ProfileName>
               <C.ProfileDescription>Descrição breve sobre David Correa ou sua experiência profissional.</C.ProfileDescription>
               

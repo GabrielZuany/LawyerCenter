@@ -5,7 +5,6 @@ import * as C from "./styles"; // Certifique-se de que os componentes estão exp
 import logo from "../../img/logo.png";
 import styled from 'styled-components';
 import { GlobalStyle } from './styles';
-import maicon from "../../img/maicon.png"
 import leojardim from "../../img/leojardim.png";
 
 const Profile = () => {
