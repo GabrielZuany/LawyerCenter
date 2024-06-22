@@ -27,5 +27,19 @@ namespace API.Infra.Repository
             _context.Remove(lawyer);
             return _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Lawyer>> GetPage(int skip, int take)
+        {
+            return await _context
+                            .Lawyers
+                            .Skip(skip)
+                            .Take(take)
+                            .ToListAsync();
+        }
+
+        public async Task<Lawyer?> GetById(Guid id)
+        {
+            return await _context.Lawyers.FirstOrDefaultAsync(l => l.Id == id);
+        }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Model;
 using API.Repository.Interfaces;
 using Microsoft.OpenApi.Validations;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -13,6 +14,7 @@ namespace API.Controllers
     {
         private readonly IClientRepository _clientRepository;
         private readonly ILogger<ClientController> _logger;
+        private readonly DataEncryptionSevice _dataEncryptionSevice = new();
 
         public ClientController(IClientRepository clientRepository, ILogger<ClientController> logger)
         {
@@ -21,12 +23,31 @@ namespace API.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody]ClientViewModel clientViewModel)
+        public async Task<IActionResult> Create([FromBody]ClientViewModel clientViewModel)
         {
             try
             {
-                var client = new Client(Guid.NewGuid(), clientViewModel.Name, clientViewModel.Cpf, clientViewModel.Email, clientViewModel.Password, clientViewModel.Postalcode, clientViewModel.Country, clientViewModel.State, clientViewModel.City, DateTime.Now.ToUniversalTime(), null, clientViewModel.Photo);
-                _clientRepository.Create(client);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(clientViewModel.Password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(clientViewModel.Cpf);
+                byte[] encryptedPostalcode = await _dataEncryptionSevice.EncryptAsync(clientViewModel.Postalcode);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+                string encryptedPostalcodeString = Convert.ToBase64String(encryptedPostalcode);
+
+                var client = new Client(
+                    Guid.NewGuid(), 
+                    clientViewModel.Name, 
+                    encryptedCpfString, 
+                    clientViewModel.Email, 
+                    encryptedPasswordString, 
+                    encryptedPostalcodeString, 
+                    clientViewModel.Country, 
+                    clientViewModel.State, 
+                    clientViewModel.City, 
+                    DateTime.Now.ToUniversalTime(), 
+                    null, 
+                    clientViewModel.Photo);
+                await _clientRepository.Create(client);
                 return Ok();
             }catch(Exception e)
             {
@@ -36,13 +57,35 @@ namespace API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody]ClientViewModel clientViewModel)
+        public async Task<IActionResult> Update(string email, string password, [FromBody]ClientViewModel newClientViewModel)
         {
             try
             {
-                var old = await _clientRepository.Get(clientViewModel.Email, clientViewModel.Cpf, clientViewModel.Password);
-                var client = new Client(old!.Id, clientViewModel.Name, clientViewModel.Cpf, clientViewModel.Email, clientViewModel.Password, clientViewModel.Postalcode, clientViewModel.Country, clientViewModel.State, clientViewModel.City, old!.RegistrationDate.ToUniversalTime(), DateTime.Now.ToUniversalTime(), clientViewModel.Photo);
-                await _clientRepository.Update(client);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                var old = await _clientRepository.Get(email, null, encryptedPasswordString);
+                if(old == null){ return NotFound(); }
+
+                byte[] newEncryptedCpf = await _dataEncryptionSevice.EncryptAsync(newClientViewModel.Cpf);
+                byte[] newEncryptedPostalcode = await _dataEncryptionSevice.EncryptAsync(newClientViewModel.Postalcode);
+                byte[] newEncryptedPassword = await _dataEncryptionSevice.EncryptAsync(newClientViewModel.Password);
+                string newEncryptedCpfString = Convert.ToBase64String(newEncryptedCpf);
+                string newEncryptedPostalcodeString = Convert.ToBase64String(newEncryptedPostalcode);
+                string newEncryptedPasswordString = Convert.ToBase64String(newEncryptedPassword);
+
+                old.Name = newClientViewModel.Name;
+                old.Email = newClientViewModel.Email;
+                old.Cpf = newEncryptedCpfString;
+                old.Password = newEncryptedPasswordString;
+                old.Photo = newClientViewModel.Photo;
+                old.Postalcode = newEncryptedPostalcodeString;
+                old.Country = newClientViewModel.Country;
+                old.State = newClientViewModel.State;
+                old.City = newClientViewModel.City;
+                old.RegistrationDate = old.RegistrationDate.ToUniversalTime();
+                old.LastUpdate = DateTime.Now.ToUniversalTime();
+
+                await _clientRepository.Update(old);
                 return Ok();
             }catch(Exception e)
             {
@@ -52,11 +95,15 @@ namespace API.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> Delete([FromBody]ClientViewModel clientViewModel)
+        public async Task<IActionResult> Delete(string email, string cpf, string password)
         {
             try
             {
-                var old = await _clientRepository.Get(clientViewModel.Email, clientViewModel.Cpf, clientViewModel.Password);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+                var old = await _clientRepository.Get(email, encryptedCpfString, encryptedPasswordString);
                 await _clientRepository.Delete(old!);
                 return Ok();
             }catch(Exception e)
@@ -71,7 +118,11 @@ namespace API.Controllers
         {
             try
             {
-                var client = await _clientRepository.Get(email, cpf, password);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf ?? "");
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+                var client = await _clientRepository.Get(email, encryptedCpfString, encryptedPasswordString);
                 return Ok(client);
             }catch(Exception e)
             {

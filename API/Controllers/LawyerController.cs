@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Model;
 using API.Repository.Interfaces;
 using Microsoft.OpenApi.Validations;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -14,6 +15,7 @@ namespace API.Controllers
         private readonly ILawyerRepository _lawyerRepository;
         private readonly ILawyerCategoryRepository _lawyerCategoryRepository;
         private readonly ILogger<LawyerController> _logger;
+        private readonly DataEncryptionSevice _dataEncryptionSevice = new();
 
         public LawyerController(ILawyerRepository lawyerRepository, ILawyerCategoryRepository lawyerCategoryRepository, ILogger<LawyerController> logger)
         {
@@ -34,7 +36,31 @@ namespace API.Controllers
                     return StatusCode(500);
                 }
                 Guid categoryId = lc.Id;  
-                var lawyer = new Lawyer(Guid.NewGuid(), lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, categoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, DateTime.Now.ToUniversalTime(), null, lawyerViewModel.Photo);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Cpf);
+                byte[] encryptedProfessionalId = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.ProfessionalId);
+                byte[] encryptedPostalcode = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Postalcode);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+                string encryptedProfessionalIdString = Convert.ToBase64String(encryptedProfessionalId);
+                string encryptedPostalcodeString = Convert.ToBase64String(encryptedPostalcode);
+
+                var lawyer = new Lawyer(
+                    Guid.NewGuid(), 
+                    lawyerViewModel.Name, 
+                    encryptedCpfString, 
+                    encryptedProfessionalIdString, 
+                    categoryId, 
+                    encryptedPostalcodeString, 
+                    lawyerViewModel.Country, 
+                    lawyerViewModel.State, 
+                    lawyerViewModel.City, 
+                    DateTime.Now.ToUniversalTime(), 
+                    null, 
+                    lawyerViewModel.Photo,
+                    lawyerViewModel.Email,
+                    encryptedPasswordString
+                    );
                 await _lawyerRepository.Create(lawyer);
                 return Ok();
             }catch(Exception e)
@@ -50,9 +76,33 @@ namespace API.Controllers
             try
             {
                 LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryEnumIdentifier);
-                var old = await _lawyerRepository.Login(lawyerViewModel.Email, lawyerViewModel.Cpf, lawyerViewModel.Password);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Cpf);
+                byte[] encryptedProfessionalId = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.ProfessionalId);
+                byte[] encryptedPostalcode = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Postalcode);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+                string encryptedProfessionalIdString = Convert.ToBase64String(encryptedProfessionalId);
+                string encryptedPostalcodeString = Convert.ToBase64String(encryptedPostalcode);
 
-                var lawyer = new Lawyer(old!.Id, lawyerViewModel.Name, lawyerViewModel.Cpf, lawyerViewModel.ProfessionalId, lc?.Id ?? old!.LawyerCategoryId, lawyerViewModel.Postalcode, lawyerViewModel.Country, lawyerViewModel.State, lawyerViewModel.City, old!.RegistrationDate.ToUniversalTime(), DateTime.Now.ToUniversalTime(), lawyerViewModel.Photo);
+                var old = await _lawyerRepository.Login(lawyerViewModel.Email, encryptedCpfString, encryptedPasswordString);
+
+                var lawyer = new Lawyer(
+                    old!.Id, 
+                    lawyerViewModel.Name, 
+                    encryptedCpfString, 
+                    encryptedProfessionalIdString, 
+                    lc?.Id ?? old!.LawyerCategoryId, 
+                    encryptedPostalcodeString, 
+                    lawyerViewModel.Country, 
+                    lawyerViewModel.State, 
+                    lawyerViewModel.City, 
+                    old!.RegistrationDate.ToUniversalTime(), 
+                    DateTime.Now.ToUniversalTime(), 
+                    lawyerViewModel.Photo,
+                    lawyerViewModel.Email,
+                    encryptedPasswordString
+                    );
 
                 await _lawyerRepository.Update(lawyer);
                 return Ok();
@@ -68,7 +118,12 @@ namespace API.Controllers
         {
             try
             {
-                var old = await _lawyerRepository.Login(email, cpf, password);
+                byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
+                byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf);
+                string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+                string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+
+                var old = await _lawyerRepository.Login(email, encryptedCpfString, encryptedPasswordString);
                 if (old == null) {
                     _logger.LogError("Lawyer not found!");
                     return StatusCode(500);
@@ -85,7 +140,30 @@ namespace API.Controllers
         [HttpPut("get")]
         public async Task<IActionResult> Get(string email, string cpf, string password)
         {
-            var lawyer = await _lawyerRepository.Login(email, cpf, password);
+            byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
+            byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf);
+            string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
+            string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+            var lawyer = await _lawyerRepository.Login(email, encryptedCpfString, encryptedPasswordString);
+            if(lawyer == null)
+            {
+                _logger.LogError("Lawyer not found!");
+                return StatusCode(500);
+            }
+            return Ok(lawyer);
+        }
+
+        [HttpGet("getpage")]
+        public async Task<IActionResult> GetPage(int skip, int take)
+        {
+            var lawyers = await _lawyerRepository.GetPage(skip, take);
+            return Ok(lawyers);
+        }
+
+        [HttpGet("getbyid")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var lawyer = await _lawyerRepository.GetById(id);
             if(lawyer == null)
             {
                 _logger.LogError("Lawyer not found!");

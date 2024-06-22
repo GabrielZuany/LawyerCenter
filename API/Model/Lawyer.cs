@@ -37,7 +37,7 @@ namespace API.Model
         [Column("password")]
         public string Password { get; set; }
 
-        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo)
+        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo, string email, string password)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -51,6 +51,8 @@ namespace API.Model
             RegistrationDate = registrationDate == DateTime.MinValue ? throw new ArgumentNullException(nameof(registrationDate)) : registrationDate;
             LastUpdate = lastUpdate;
             Photo = photo;
+            Email = email ?? throw new ArgumentNullException(nameof(email));
+            Password = password ?? throw new ArgumentNullException(nameof(password));
         }
     }
 }
