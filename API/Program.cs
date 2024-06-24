@@ -25,6 +25,14 @@ builder.Services.AddTransient<IClientLawyerRepository, ClientLawyerRepository>()
 
 var app = builder.Build();
 
+// Configure CORS policies
+app.UseCors(options =>
+{
+    options.WithOrigins("http://localhost:3000") // Replace with your frontend URL
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
