@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
@@ -8,8 +8,7 @@ import maicon from "../../img/maicon.png"
 import logo from "../../img/logo.png";
 import { GlobalStyle } from './styles'; // Importe o GlobalStyle aqui
 import { RadioButton } from "./styles";
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+
 
 const Home = () => {
   const { signout } = useAuth();
@@ -28,9 +27,34 @@ const Home = () => {
     signout(); // Isso irá limpar quaisquer tokens de autenticação
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
-  const StyledLink = styled(Link)`
-    text-decoration: none; // Remove o sublinhado
-  `;
+  
+  var current_page = 0; 
+  const skip = current_page * 3;
+  const take = 3;
+  const url = `http://localhost:5001/api/v1/lawyer/getpage?skip=${skip}&take=${take}`;
+  const [idade, setIdades] = useState([32, 31, 37]);
+  const [nome, setNomes] = useState(["Loading...", "Loading...", "Loading..."]);
+  const [cidade, setCidades] = useState(["Loading...", "Loading...", "Loading..."]);
+  const [uf, setUfs] = useState(["Loading...", "Loading...", "Loading..."]);
+  const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."
+  ]);
+  const fetchLawyers = async () => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log('API Response:', data);
+    // setIdades(data.map(lawyer => lawyer.age));
+    setNomes(data.map(lawyer => lawyer.name));
+    setCidades(data.map(lawyer => lawyer.city));
+    setUfs(data.map(lawyer => lawyer.state));
+    // setDescricoes(data.map(lawyer => lawyer.description));
+  };
+  useEffect(() => {
+    fetchLawyers();
+  }, []);
+
   return (
     <>
       <GlobalStyle />
@@ -47,33 +71,33 @@ const Home = () => {
                 {/* Adicione estes elementos de seleção para o estado e tipo */}
                 <C.Select value={estado} onChange={handleEstadoChange}>
                 <option value="">Selecione o estado</option>
-                <option value="AC">Acre</option>
-                <option value="AL">Alagoas</option>
-                <option value="AP">Amapá</option>
-                <option value="AM">Amazonas</option>
-                <option value="BA">Bahia</option>
-                <option value="CE">Ceará</option>
-                <option value="DF">Distrito Federal</option>
-                <option value="ES">Espírito Santo</option>
-                <option value="GO">Goiás</option>
-                <option value="MA">Maranhão</option>
-                <option value="MT">Mato Grosso</option>
-                <option value="MS">Mato Grosso do Sul</option>
-                <option value="MG">Minas Gerais</option>
-                <option value="PA">Pará</option>
-                <option value="PB">Paraíba</option>
-                <option value="PR">Paraná</option>
-                <option value="PE">Pernambuco</option>
-                <option value="PI">Piauí</option>
-                <option value="RJ">Rio de Janeiro</option>
-                <option value="RN">Rio Grande do Norte</option>
-                <option value="RS">Rio Grande do Sul</option>
-                <option value="RO">Rondônia</option>
-                <option value="RR">Roraima</option>
-                <option value="SC">Santa Catarina</option>
-                <option value="SP">São Paulo</option>
-                <option value="SE">Sergipe</option>
-                <option value="TO">Tocantins</option>
+                <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AP">AP</option>
+                <option value="AM">AM</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MT">MT</option>
+                <option value="MS">MS</option>
+                <option value="MG">MG</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PR">PR</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RS">RS</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="SC">SC</option>
+                <option value="SP">SP</option>
+                <option value="SE">SE</option>
+                <option value="TO">TO</option>
                 </C.Select>
               </C.SearchSelecionavel>
               <C.SearchTitle>Tipo</C.SearchTitle>
@@ -121,13 +145,13 @@ const Home = () => {
             <C.ProfileCard>
               <C.ProfileImage src={leojardim} alt="Leo Jardins" />
               <C.ProfileName>
-                Leo Jardins
-                <C.ProfileDetails>32 anos</C.ProfileDetails>
-                <C.ProfileDetails>Vitória, Espírito Santo</C.ProfileDetails>
+                {nome[0]}
+                <C.ProfileDetails>{idade[0]} anos</C.ProfileDetails>
+                <C.ProfileDetails>{cidade[0]}, {uf[0]}</C.ProfileDetails>
                 <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
               </C.ProfileName>
               <C.ProfileDescription>
-                Descrição breve sobre Leo Jardins ou sua experiência profissional Descrição breve sobre Leo Jardins ou sua experiência profissional Descrição breve sobre Leo Jardins ou sua experiência profissional
+                  {descricao[0]}
               </C.ProfileDescription>
             </C.ProfileCard>
           
@@ -135,13 +159,13 @@ const Home = () => {
           <C.ProfileCard>
               <C.ProfileImage src={dvd} alt="David Correa" />
               <C.ProfileName>
-                  David Correa
-                <C.ProfileDetails>37 anos</C.ProfileDetails>
-                <C.ProfileDetails>Majur, Espírito Santo</C.ProfileDetails>
+                {nome[1]}
+                <C.ProfileDetails>{idade[1]} anos</C.ProfileDetails>
+                <C.ProfileDetails>{cidade[1]}, {uf[1]}</C.ProfileDetails>
                 {/* MUDAR DEPOIS, ESTA INDO PARA A TELA DO ADVOGADO */}
                 <C.Button onClick={() => navigate('/lawyerHome')}>Visualizar Perfil</C.Button>
               </C.ProfileName>
-              <C.ProfileDescription>Descrição breve sobre David Correa ou sua experiência profissional.</C.ProfileDescription>
+              <C.ProfileDescription>{descricao[1]}</C.ProfileDescription>
               
           </C.ProfileCard>
           
@@ -149,12 +173,12 @@ const Home = () => {
           <C.ProfileCard>
             <C.ProfileImage src={maicon} alt="Maicon" />
             <C.ProfileName>
-              Maicon 
-              <C.ProfileDetails>37 anos</C.ProfileDetails>
-              <C.ProfileDetails>Jaguare, Espírito Santo</C.ProfileDetails>
+              {nome[2]}
+              <C.ProfileDetails>{idade[2]} anos</C.ProfileDetails>
+              <C.ProfileDetails>{cidade[2]}, {uf[2]}</C.ProfileDetails>
               <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
             </C.ProfileName>
-            <C.ProfileDescription>maicon eles nao ligam pra gente</C.ProfileDescription>
+            <C.ProfileDescription>{descricao[2]}</C.ProfileDescription>
           </C.ProfileCard>
           
         </C.Container>
