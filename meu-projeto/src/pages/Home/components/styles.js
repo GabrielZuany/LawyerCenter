@@ -228,3 +228,33 @@ export const Button = styled.button`
   font-size: 1.5vh;
   max-width: 38.9vh;
 `;
+export const PageButton = styled.button`
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: ${({ active }) => (active ? '#ccc' : '#fff')};
+  border: 1px solid #000;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+export const ArrowButton = styled.button`
+  margin: 0 10px;
+  padding: 5px 10px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+export const ContainerPagination = styled.div`
+  margin-top: 1.5vh;
+  margin-left: 71.6vh;
+`;

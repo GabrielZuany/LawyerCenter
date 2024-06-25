@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react"
+import ReactDOM from 'react-dom';
+import Pagination from './components/pagination';
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import * as C from "./styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
+import * as C from "./components/styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
 import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
 import dvd from "../../img/dvd.png";
 import maicon from "../../img/maicon.png"
 import logo from "../../img/logo.png";
-import { GlobalStyle } from './styles'; // Importe o GlobalStyle aqui
-import { RadioButton } from "./styles";
+import { GlobalStyle } from './components/styles'; // Importe o GlobalStyle aqui
+import { RadioButton } from "./components/styles";
 
 
 const Home = () => {
@@ -27,7 +29,8 @@ const Home = () => {
     signout(); // Isso irá limpar quaisquer tokens de autenticação
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
-  
+
+  const totalPages = 9;
   var current_page = 0; 
   const skip = current_page * 3;
   const take = 3;
@@ -38,7 +41,7 @@ const Home = () => {
   const [uf, setUfs] = useState(["Loading...", "Loading...", "Loading..."]);
   const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."
   ]);
-  const fetchLawyers = async () => {
+  /*const fetchLawyers = async () => {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -53,7 +56,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchLawyers();
-  }, []);
+  }, []);*/
 
   return (
     <>
@@ -180,11 +183,13 @@ const Home = () => {
             </C.ProfileName>
             <C.ProfileDescription>{descricao[2]}</C.ProfileDescription>
           </C.ProfileCard>
-          
-        </C.Container>
+          <Pagination totalPages={totalPages} />          
+        </C.Container>       
       </C.TelaInteira>
+      
     </>
   );
 };
+
 
 export default Home;
