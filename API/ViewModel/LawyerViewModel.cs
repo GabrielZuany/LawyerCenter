@@ -25,5 +25,9 @@ namespace API.ViewModel
         [Display(Name = "photo")]
         public string? Photo { get; set; }
         public int CategoryEnumIdentifier { get; set; }
+        [Display(Name = "description")]
+        public string? Description { get; set; }
+        [Display(Name = "age")]
+        public int Age { get; set; }
     }
 }

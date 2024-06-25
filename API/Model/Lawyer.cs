@@ -36,8 +36,12 @@ namespace API.Model
         public string Email { get; set; }
         [Column("password")]
         public string Password { get; set; }
+        [Column("description")]
+        public string? Description { get; set; }
+        [Column("age")]
+        public int Age { get; set; }
 
-        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo, string email, string password)
+        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo, string email, string password, string? description, int age)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -53,6 +57,8 @@ namespace API.Model
             Photo = photo;
             Email = email ?? throw new ArgumentNullException(nameof(email));
             Password = password ?? throw new ArgumentNullException(nameof(password));
+            Description = description;
+            Age = age == 0 ? throw new ArgumentNullException(nameof(age)) : age;
         }
     }
 }
