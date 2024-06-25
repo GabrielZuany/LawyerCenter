@@ -41,5 +41,39 @@ namespace API.Infra.Repository
         {
             return await _context.Lawyers.FirstOrDefaultAsync(l => l.Id == id);
         }
+
+        public async Task<IEnumerable<Lawyer>> GetFiltered(int skip, int take, string? category, string? state)
+        {
+            if (category == null && state == null)
+                return await _context
+                                .Lawyers
+                                .Skip(skip)
+                                .Take(take)
+                                .ToListAsync();
+            if (category == null)
+                return await _context
+                                .Lawyers
+                                .Where(l => l.State == state)
+                                .Skip(skip)
+                                .Take(take)
+                                .ToListAsync();
+            LawyerCategory lawyerCategory = await _context.LawyerCategories.FirstOrDefaultAsync(lc => lc.Alias == category);
+            if (lawyerCategory == null)
+                return null;
+            Guid categoryId = lawyerCategory.Id;
+            if (state == null)
+                return await _context
+                                .Lawyers
+                                .Where(l => l.LawyerCategoryId == categoryId)
+                                .Skip(skip)
+                                .Take(take)
+                                .ToListAsync();
+            return await _context
+                            .Lawyers
+                            .Where(l => l.LawyerCategoryId == categoryId && l.State == state)
+                            .Skip(skip)
+                            .Take(take)
+                            .ToListAsync();
+        }
     }
 }

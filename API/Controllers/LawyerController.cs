@@ -59,7 +59,9 @@ namespace API.Controllers
                     null, 
                     lawyerViewModel.Photo,
                     lawyerViewModel.Email,
-                    encryptedPasswordString
+                    encryptedPasswordString,
+                    lawyerViewModel.Description,
+                    lawyerViewModel.Age
                     );
                 await _lawyerRepository.Create(lawyer);
                 return Ok();
@@ -101,7 +103,9 @@ namespace API.Controllers
                     DateTime.Now.ToUniversalTime(), 
                     lawyerViewModel.Photo,
                     lawyerViewModel.Email,
-                    encryptedPasswordString
+                    encryptedPasswordString,
+                    lawyerViewModel.Description,
+                    lawyerViewModel.Age
                     );
 
                 await _lawyerRepository.Update(lawyer);
@@ -170,6 +174,18 @@ namespace API.Controllers
                 return StatusCode(500);
             }
             return Ok(lawyer);
+        }
+
+        [HttpGet("getfiltered")]
+        public async Task<IActionResult> GetFiltered(int skip, int take, string? category, string? state)
+        {
+            var lawyers = await _lawyerRepository.GetFiltered(skip, take, category, state);
+            if (lawyers == null)
+            {
+                _logger.LogError("Lawyers not found!");
+                return StatusCode(500);
+            }            
+            return Ok(lawyers);
         }
     }
 }
