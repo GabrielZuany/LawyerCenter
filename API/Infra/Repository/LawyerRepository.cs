@@ -57,9 +57,9 @@ namespace API.Infra.Repository
                                 .Skip(skip)
                                 .Take(take)
                                 .ToListAsync();
-            LawyerCategory lawyerCategory = await _context.LawyerCategories.FirstOrDefaultAsync(lc => lc.Alias == category);
+            LawyerCategory? lawyerCategory = await _context.LawyerCategories.FirstOrDefaultAsync(lc => lc.Alias == category);
             if (lawyerCategory == null)
-                return null;
+                return new List<Lawyer>();
             Guid categoryId = lawyerCategory.Id;
             if (state == null)
                 return await _context
