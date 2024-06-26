@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { ContainerPagination, PageButton, ArrowButton } from './styles';
 
-const Pagination = ({ totalPages }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({ totalPages, currentPage, onPageChange } ) => {
+  // const [currentPage, setCurrentPage] = useState(1);
 
   const handlePageClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    onPageChange(pageNumber);
   };
 
   const getPageNumbers = () => {

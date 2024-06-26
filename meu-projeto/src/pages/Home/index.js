@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import ReactDOM from 'react-dom';
 import Pagination from './components/pagination';
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -11,12 +10,16 @@ import logo from "../../img/logo.png";
 import { GlobalStyle } from './components/styles'; // Importe o GlobalStyle aqui
 import { RadioButton } from "./components/styles";
 
-
 const Home = () => {
   const { signout } = useAuth();
   const navigate = useNavigate();
   const [estado, setEstado] = useState("");
   const [tipo, setTipo] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleEstadoChange = (e) => {
     setEstado(e.target.value);
@@ -25,38 +28,38 @@ const Home = () => {
   const handleTipoChange = (e) => {
     setTipo(e.target.value);
   };
+
   const handleLogout = () => {
     signout(); // Isso irá limpar quaisquer tokens de autenticação
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
 
   const totalPages = 9;
-  var current_page = 0; 
-  const skip = current_page * 3;
-  const take = 3;
-  const url = `http://localhost:5001/api/v1/lawyer/getpage?skip=${skip}&take=${take}`;
   const [idade, setIdades] = useState([32, 31, 37]);
   const [nome, setNomes] = useState(["Loading...", "Loading...", "Loading..."]);
   const [cidade, setCidades] = useState(["Loading...", "Loading...", "Loading..."]);
   const [uf, setUfs] = useState(["Loading...", "Loading...", "Loading..."]);
   const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."
-  ]);
-  /*const fetchLawyers = async () => {
+    ]);
+  const fetchLawyers = async () => {
+    const skip = (currentPage - 1) * 3;
+    const take = 3;
+    const url = `http://localhost:5001/api/v1/lawyer/getfiltered?skip=${skip}&take=${take}&category=${tipo}&state=${estado}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
     console.log('API Response:', data);
-    // setIdades(data.map(lawyer => lawyer.age));
+    setIdades(data.map(lawyer => lawyer.age));
     setNomes(data.map(lawyer => lawyer.name));
     setCidades(data.map(lawyer => lawyer.city));
     setUfs(data.map(lawyer => lawyer.state));
-    // setDescricoes(data.map(lawyer => lawyer.description));
+    setDescricoes(data.map(lawyer => lawyer.description));
   };
   useEffect(() => {
     fetchLawyers();
-  }, []);*/
+  }, [estado, tipo, currentPage]);
 
   return (
     <>
@@ -136,6 +139,11 @@ const Home = () => {
                   <span className="checkmark"></span>
                 </RadioButton>
                 <RadioButton>
+                  <input type="radio" name="tipo" value="Tributário" onChange={handleTipoChange} />
+                  Tributário
+                  <span className="checkmark"></span>
+                </RadioButton>
+                <RadioButton>
                   <input type="radio" name="tipo" value="Previdenciário" onChange={handleTipoChange} />
                   Previdenciário
                   <span className="checkmark"></span>
@@ -183,7 +191,7 @@ const Home = () => {
             </C.ProfileName>
             <C.ProfileDescription>{descricao[2]}</C.ProfileDescription>
           </C.ProfileCard>
-          <Pagination totalPages={totalPages} />          
+          <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange}/>          
         </C.Container>       
       </C.TelaInteira>
       

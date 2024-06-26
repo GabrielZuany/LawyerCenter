@@ -28,8 +28,7 @@ export const Select = styled.select`
   border-radius: 0.6vh; // Adiciona bordas arredondadas
 `;
 export const SearchCard = styled.div`
-  height: 42vh;
-  width: 10vh; // Adicionado para ocupar toda a largura da tela
+  height: 44.5vh;
   display: flex;
   flex-direction: line;
   margin-left: 3vh;
