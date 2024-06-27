@@ -47,11 +47,13 @@ const Signin = () => {
       if (response_lawyer.ok) {
         const data = await response_lawyer.json();
         console.log("Lawyer API Response:", data);
-        navigate("/lawyerHome");
+        const url = "/lawyerHome/" + data["id"]
+        navigate(url);
       }else if (response_client.ok) {
         const data = await response_client.json();
         console.log("Client Response:", data);
-        navigate("/home");
+        const url = "/home/" + data["id"];
+        navigate(url);
       }
     } catch (error) {
       console.error("Error during login:", error);

@@ -18,12 +18,11 @@ const RoutesApp = () => {
     <BrowserRouter>
       <Fragment>
         <Routes>
-          
-          <Route exact path="/home" element={<Home/>} />
+          <Route exact path="/home/:clientId" element={<Home/>} />
           <Route path="/" element={<Signin />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/lawyerHome" element={<LawyerHome />} />
+          <Route exact path="/lawyerHome/:lawyerId" element={<LawyerHome />} />
           <Route path="*" element={<Signin />} />
         </Routes>
       </Fragment>
