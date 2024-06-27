@@ -38,57 +38,115 @@ const Signup = () => {
   };
   const navigate = useNavigate();
 
-  const { signup } = useAuth();
+  // const { signup } = useAuth();
 
-  const handleSignup = (isAdvogado = false) => {
-    let nomeToUse = isAdvogado ? nomeAdvogado : nome;
-    let emailToUse = isAdvogado ? emailAdvogado : email;
-    let cpfToUse = isAdvogado ? cpfAdvogado : cpf;
-    let cidadeToUse = isAdvogado ? cidadeAdvogado : cidade;
-    let estadoToUse = isAdvogado ? estadoAdvogado : estado;
-    let senhaToUse = isAdvogado ? senhaAdvogado : senha;
-    let setErrorFunc = isAdvogado ? setErrorAdvogado : setError;
+  // const handleSignup = (isAdvogado = false) => {
+  //   let nomeToUse = isAdvogado ? nomeAdvogado : nome;
+  //   let emailToUse = isAdvogado ? emailAdvogado : email;
+  //   let cpfToUse = isAdvogado ? cpfAdvogado : cpf;
+  //   let cidadeToUse = isAdvogado ? cidadeAdvogado : cidade;
+  //   let estadoToUse = isAdvogado ? estadoAdvogado : estado;
+  //   let senhaToUse = isAdvogado ? senhaAdvogado : senha;
+  //   let setErrorFunc = isAdvogado ? setErrorAdvogado : setError;
   
-    // Verificação de campos obrigatórios comuns
-    if (!nomeToUse || !emailToUse || !cpfToUse || !cidadeToUse || !estadoToUse || !senhaToUse) {
-      setErrorFunc("Preencha todos os campos");
-      return;
-    }
+  //   // Verificação de campos obrigatórios comuns
+  //   if (!nomeToUse || !emailToUse || !cpfToUse || !cidadeToUse || !estadoToUse || !senhaToUse) {
+  //     setErrorFunc("Preencha todos os campos");
+  //     return;
+  //   }
   
-    // Verificação de campos adicionais para advogados
+  //   // Verificação de campos adicionais para advogados
+  //   if (isAdvogado) {
+  //     if (!idOAB || !categoria || !idade) {
+  //       setErrorAdvogado("Preencha todos os campos específicos para advogados");
+  //       return;
+  //     }
+  //   }
+  
+  //   // Dados adicionais específicos para advogados
+  //   let idOABToUse = isAdvogado ? idOAB : null;
+  //   let categoriaToUse = isAdvogado ? categoria : null;
+  //   let idadeToUse = isAdvogado ? idade : null;
+  
+  //   // Chamar a função de signup com os dados apropriados
+  //   const res = signup({
+  //     nome: nomeToUse,
+  //     email: emailToUse,
+  //     cpf: cpfToUse,
+  //     cidade: cidadeToUse,
+  //     estado: estadoToUse,
+  //     senha: senhaToUse,
+  //     idOAB: idOABToUse,
+  //     categoria: categoriaToUse,
+  //     idade: idadeToUse
+  //   });
+  
+  //   if (res) {
+  //     setErrorFunc(res);
+  //     return;
+  //   }
+  
+  //   alert("Usuário cadastrado com sucesso!");
+  //   navigate("/");
+  // };
+  const handleSignup = async (isAdvogado = false) => {
+    let url = "http://localhost:5001";
+    let body = {};
+
     if (isAdvogado) {
-      if (!idOAB || !categoria || !idade) {
-        setErrorAdvogado("Preencha todos os campos específicos para advogados");
+      url += "/api/v1/lawyer/create";
+      body = {
+        name: nomeAdvogado,
+        cpf: cpfAdvogado,
+        email: emailAdvogado,
+        password: senhaAdvogado,
+        professionalId: idOAB,
+        postalcode: "", // Fill with appropriate data if available
+        state: estadoAdvogado,
+        city: cidadeAdvogado,
+        photo: "", // Fill with appropriate data if available
+        categoryAlias: categoria,
+        description: "", // Fill with appropriate data if available
+        age: idade
+      };
+    } else {
+      url += "/api/v1/client/create";
+      body = {
+        name: nome,
+        cpf: cpf,
+        email: email,
+        password: senha,
+        postalcode: "", // Fill with appropriate data if available
+        state: estado,
+        city: cidade,
+        photo: "" // Fill with appropriate data if available
+      };
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Erro ao cadastrar usuário");
         return;
       }
+
+      // Registration successful
+      alert("Usuário cadastrado com sucesso!");
+      navigate("/");
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setError("Erro ao cadastrar usuário. Por favor, tente novamente.");
     }
-  
-    // Dados adicionais específicos para advogados
-    let idOABToUse = isAdvogado ? idOAB : null;
-    let categoriaToUse = isAdvogado ? categoria : null;
-    let idadeToUse = isAdvogado ? idade : null;
-  
-    // Chamar a função de signup com os dados apropriados
-    const res = signup({
-      nome: nomeToUse,
-      email: emailToUse,
-      cpf: cpfToUse,
-      cidade: cidadeToUse,
-      estado: estadoToUse,
-      senha: senhaToUse,
-      idOAB: idOABToUse,
-      categoria: categoriaToUse,
-      idade: idadeToUse
-    });
-  
-    if (res) {
-      setErrorFunc(res);
-      return;
-    }
-  
-    alert("Usuário cadastrado com sucesso!");
-    navigate("/");
   };
+
   
   return (
     <>
