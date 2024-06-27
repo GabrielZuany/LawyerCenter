@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
 import logo from "../../img/logo.png";
@@ -16,6 +16,8 @@ const LawyerHome = () => {
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
 
+  let { lawyerId } = useParams();
+  console.log(lawyerId);
   
   return (
     <>
