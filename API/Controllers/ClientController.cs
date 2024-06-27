@@ -40,8 +40,7 @@ namespace API.Controllers
                     encryptedCpfString, 
                     clientViewModel.Email, 
                     encryptedPasswordString, 
-                    encryptedPostalcodeString, 
-                    clientViewModel.Country, 
+                    encryptedPostalcodeString,
                     clientViewModel.State, 
                     clientViewModel.City, 
                     DateTime.Now.ToUniversalTime(), 
@@ -79,7 +78,6 @@ namespace API.Controllers
                 old.Password = newEncryptedPasswordString;
                 old.Photo = newClientViewModel.Photo;
                 old.Postalcode = newEncryptedPostalcodeString;
-                old.Country = newClientViewModel.Country;
                 old.State = newClientViewModel.State;
                 old.City = newClientViewModel.City;
                 old.RegistrationDate = old.RegistrationDate.ToUniversalTime();

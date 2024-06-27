@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             try
             {
-                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryEnumIdentifier);  
+                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryAlias);  
                 if(lc == null)
                 {
                     _logger.LogError("Lawyer category not found!");
@@ -51,8 +51,7 @@ namespace API.Controllers
                     encryptedCpfString, 
                     encryptedProfessionalIdString, 
                     categoryId, 
-                    encryptedPostalcodeString, 
-                    lawyerViewModel.Country, 
+                    encryptedPostalcodeString,
                     lawyerViewModel.State, 
                     lawyerViewModel.City, 
                     DateTime.Now.ToUniversalTime(), 
@@ -77,7 +76,7 @@ namespace API.Controllers
         {
             try
             {
-                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryEnumIdentifier);
+                LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryAlias);
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Password);
                 byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.Cpf);
                 byte[] encryptedProfessionalId = await _dataEncryptionSevice.EncryptAsync(lawyerViewModel.ProfessionalId);
@@ -96,7 +95,6 @@ namespace API.Controllers
                     encryptedProfessionalIdString, 
                     lc?.Id ?? old!.LawyerCategoryId, 
                     encryptedPostalcodeString, 
-                    lawyerViewModel.Country, 
                     lawyerViewModel.State, 
                     lawyerViewModel.City, 
                     old!.RegistrationDate.ToUniversalTime(), 
@@ -141,7 +139,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("get")]
+        [HttpGet("get")]
         public async Task<IActionResult> Get(string email, string cpf, string password)
         {
             byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);

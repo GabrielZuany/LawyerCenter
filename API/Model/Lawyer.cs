@@ -20,8 +20,6 @@ namespace API.Model
         public Guid LawyerCategoryId { get; set; }
         [Column("postalcode")]
         public string Postalcode { get; set; }
-        [Column("country")]
-        public string Country { get; set; }
         [Column("state")]
         public string State { get; set; }
         [Column("city")]
@@ -41,7 +39,7 @@ namespace API.Model
         [Column("age")]
         public int Age { get; set; }
 
-        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string country, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo, string email, string password, string? description, int age)
+        public Lawyer(Guid id, string name, string cpf, string professionalId, Guid lawyerCategoryId, string postalcode, string state, string city, DateTime registrationDate, DateTime? lastUpdate, string? photo, string email, string password, string? description, int age)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -49,7 +47,6 @@ namespace API.Model
             ProfessionalId = professionalId ?? throw new ArgumentNullException(nameof(professionalId));
             LawyerCategoryId = lawyerCategoryId == Guid.Empty ? throw new ArgumentNullException(nameof(lawyerCategoryId)) : lawyerCategoryId;
             Postalcode = postalcode ?? throw new ArgumentNullException(nameof(postalcode));
-            Country = country ?? throw new ArgumentNullException(nameof(country));
             State = state ?? throw new ArgumentNullException(nameof(state));
             City = city ?? throw new ArgumentNullException(nameof(city));
             RegistrationDate = registrationDate == DateTime.MinValue ? throw new ArgumentNullException(nameof(registrationDate)) : registrationDate;

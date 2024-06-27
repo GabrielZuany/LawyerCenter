@@ -16,15 +16,13 @@ namespace API.ViewModel
         public string ProfessionalId { get; set; }
         [Display(Name = "postalcode")]
         public string Postalcode { get; set; }
-        [Display(Name = "country")]
-        public string Country { get; set; }
         [Display(Name = "state")]
         public string State { get; set; }
         [Display(Name = "city")]
         public string City { get; set; }
         [Display(Name = "photo")]
         public string? Photo { get; set; }
-        public int CategoryEnumIdentifier { get; set; }
+        public string CategoryAlias { get; set; }
         [Display(Name = "description")]
         public string? Description { get; set; }
         [Display(Name = "age")]

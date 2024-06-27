@@ -14,8 +14,6 @@ namespace API.ViewModel
         public string Password { get; set; }
         [Display(Name = "postalcode")]
         public string Postalcode { get; set; }
-        [Display(Name = "country")]
-        public string Country { get; set; }
         [Display(Name = "state")]
         public string State { get; set; }
         [Display(Name = "city")]
