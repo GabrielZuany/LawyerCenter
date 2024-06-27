@@ -10,50 +10,86 @@ import logo_centro from "../../img/logo-centro.png";
 const Signup = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [emailConf, setEmailConf] = useState("");
   const [cpf, setCPF] = useState("");
-  const [cep, setCEP] = useState("");
+  const [cidade, setCidade] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
-
+  const [estado, setEstado] = useState("");
+  
   const [nomeAdvogado, setNomeAdvogado] = useState("");
   const [emailAdvogado, setEmailAdvogado] = useState("");
-  const [emailConfAdvogado, setEmailConfAdvogado] = useState("");
   const [cpfAdvogado, setCPFAdvogado] = useState("");
-  const [cepAdvogado, setCEPAdvogado] = useState("");
+  const [cidadeAdvogado, setCidadeAdvogado] = useState("");
+  const [estadoAdvogado, setEstadoAdvogado] = useState("");
   const [idOAB, setID] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [idade, setIdade] = useState("");
   const [senhaAdvogado, setSenhaAdvogado] = useState("");
   const [errorAdvogado, setErrorAdvogado] = useState("");
 
+  const handleEstadoChange = (e) => {
+    setEstado(e.target.value);
+  };
+  const handleCategoria = (e) => {
+    setCategoria(e.target.value);
+  };
+  const handleEstadoAdvogadoChange = (e) => {
+    setEstadoAdvogado(e.target.value);
+  };
   const navigate = useNavigate();
 
   const { signup } = useAuth();
 
   const handleSignup = (isAdvogado = false) => {
+    let nomeToUse = isAdvogado ? nomeAdvogado : nome;
     let emailToUse = isAdvogado ? emailAdvogado : email;
-    let emailConfToUse = isAdvogado ? emailConfAdvogado : emailConf;
+    let cpfToUse = isAdvogado ? cpfAdvogado : cpf;
+    let cidadeToUse = isAdvogado ? cidadeAdvogado : cidade;
+    let estadoToUse = isAdvogado ? estadoAdvogado : estado;
     let senhaToUse = isAdvogado ? senhaAdvogado : senha;
     let setErrorFunc = isAdvogado ? setErrorAdvogado : setError;
-
-    if (!emailToUse | !emailConfToUse | !senhaToUse) {
+  
+    // Verificação de campos obrigatórios comuns
+    if (!nomeToUse || !emailToUse || !cpfToUse || !cidadeToUse || !estadoToUse || !senhaToUse) {
       setErrorFunc("Preencha todos os campos");
       return;
-    } else if (emailToUse !== emailConfToUse) {
-      setErrorFunc("Os e-mails não são iguais");
-      return;
     }
-
-    const res = signup(emailToUse, senhaToUse);
-
+  
+    // Verificação de campos adicionais para advogados
+    if (isAdvogado) {
+      if (!idOAB || !categoria || !idade) {
+        setErrorAdvogado("Preencha todos os campos específicos para advogados");
+        return;
+      }
+    }
+  
+    // Dados adicionais específicos para advogados
+    let idOABToUse = isAdvogado ? idOAB : null;
+    let categoriaToUse = isAdvogado ? categoria : null;
+    let idadeToUse = isAdvogado ? idade : null;
+  
+    // Chamar a função de signup com os dados apropriados
+    const res = signup({
+      nome: nomeToUse,
+      email: emailToUse,
+      cpf: cpfToUse,
+      cidade: cidadeToUse,
+      estado: estadoToUse,
+      senha: senhaToUse,
+      idOAB: idOABToUse,
+      categoria: categoriaToUse,
+      idade: idadeToUse
+    });
+  
     if (res) {
       setErrorFunc(res);
       return;
     }
-
+  
     alert("Usuário cadastrado com sucesso!");
     navigate("/");
   };
-
+  
   return (
     <>
     <C.Logozinho src = {logozinho} alt="Logozinho" title="Logozinho"/>
@@ -73,22 +109,49 @@ const Signup = () => {
           onChange={(e) => [setEmail(e.target.value), setError("")]}
         />
         <Input
-          type="email"
-          placeholder="Confirme seu E-mail"
-          value={emailConf}
-          onChange={(e) => [setEmailConf(e.target.value), setError("")]}
-        />
-        <Input
           type="cpf"
           placeholder="CPF"
           value={cpf}
           onChange={(e) => [setCPF(e.target.value), setError("")]}
         />
+        
+        <C.Select value={estado} onChange={handleEstadoChange} hasValue={estado !== ""}>
+          
+          <option value="">Selecione o Estado</option>
+          <option value="AC">AC</option>
+          <option value="AL">AL</option>
+          <option value="AP">AP</option>
+          <option value="AM">AM</option>
+          <option value="BA">BA</option> 
+          <option value="CE">CE</option>
+          <option value="DF">DF</option>
+          <option value="ES">ES</option>
+          <option value="GO">GO</option>
+          <option value="MA">MA</option>
+          <option value="MT">MT</option>
+          <option value="MS">MS</option>
+          <option value="MG">MG</option>
+          <option value="PA">PA</option>
+          <option value="PB">PB</option>
+          <option value="PR">PR</option>
+          <option value="PE">PE</option>
+          <option value="PI">PI</option>
+          <option value="RJ">RJ</option>
+          <option value="RN">RN</option>
+          <option value="RS">RS</option>
+          <option value="RO">RO</option>
+          <option value="RR">RR</option>
+          <option value="SC">SC</option>
+          <option value="SP">SP</option>
+          <option value="SE">SE</option>
+          <option value="TO">TO</option>
+        </C.Select>
+        
         <Input
-          type="cep"
-          placeholder="Insira seu CEP"
-          value={cep}
-          onChange={(e) => [setCEP(e.target.value), setError("")]}
+          type="cidade"
+          placeholder="Insira sua cidade"
+          value={cidade}
+          onChange={(e) => [setCidade(e.target.value), setError("")]}
         />
         <Input
           type="password"
@@ -121,28 +184,71 @@ const Signup = () => {
           onChange={(e) => [setEmailAdvogado(e.target.value), setErrorAdvogado("")]}
         />
         <Input
-          type="email"
-          placeholder="Confirme seu E-mail"
-          value={emailConfAdvogado}
-          onChange={(e) => [setEmailConfAdvogado(e.target.value), setErrorAdvogado("")]}
-        />
-        <Input
           type="cpf"
           placeholder="CPF"
           value={cpfAdvogado}
           onChange={(e) => [setCPFAdvogado(e.target.value), setErrorAdvogado("")]}
         />
+        <C.Select value={estadoAdvogado} onChange={handleEstadoAdvogadoChange} hasValue={estadoAdvogado !== ""}>
+          
+          <option value="">Selecione o Estado</option>
+          <option value="AC">AC</option>
+          <option value="AL">AL</option>
+          <option value="AP">AP</option>
+          <option value="AM">AM</option>
+          <option value="BA">BA</option> 
+          <option value="CE">CE</option>
+          <option value="DF">DF</option>
+          <option value="ES">ES</option>
+          <option value="GO">GO</option>
+          <option value="MA">MA</option>
+          <option value="MT">MT</option>
+          <option value="MS">MS</option>
+          <option value="MG">MG</option>
+          <option value="PA">PA</option>
+          <option value="PB">PB</option>
+          <option value="PR">PR</option>
+          <option value="PE">PE</option>
+          <option value="PI">PI</option>
+          <option value="RJ">RJ</option>
+          <option value="RN">RN</option>
+          <option value="RS">RS</option>
+          <option value="RO">RO</option>
+          <option value="RR">RR</option>
+          <option value="SC">SC</option>
+          <option value="SP">SP</option>
+          <option value="SE">SE</option>
+          <option value="TO">TO</option>
+        </C.Select>
         <Input
-          type="cep"
-          placeholder="Insira seu CEP"
-          value={cepAdvogado}
-          onChange={(e) => [setCEPAdvogado(e.target.value), setErrorAdvogado("")]}
+          type="cidade"
+          placeholder="Insira sua cidade"
+          value={cidadeAdvogado}
+          onChange={(e) => [setCidadeAdvogado(e.target.value), setErrorAdvogado("")]}
         />
         <Input
-          type="text"
+          type="ID"
           placeholder="ID OAB"
           value={idOAB}
           onChange={(e) => [setID(e.target.value), setErrorAdvogado("")]}
+        />
+         <C.Select value={categoria} onChange={handleCategoria} hasValue={categoria !== ""}>
+          
+          <option value="">Selecione a sua categoria</option>
+          <option value="Cível">Cível</option>
+          <option value="Trabalhista">Trabalhista</option>
+          <option value="Imobiliário">Imobiliário</option>
+          <option value="Ambientalista">Ambientalista</option>
+          <option value="Consumidor">Consumidor</option> 
+          <option value="Criminalista">Criminalista</option>
+          <option value="Tributário">Tributário</option>
+          <option value="Previdenciário">Previdenciário</option>         
+        </C.Select>
+        <Input
+          type="idade"
+          placeholder="Idade"
+          value={idade}
+          onChange={(e) => [setIdade(e.target.value), setErrorAdvogado("")]}
         />
         <Input
           type="password"

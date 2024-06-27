@@ -9,9 +9,25 @@ export const Container = styled.div`
   gap: 200px;
   height: 90vh;
 `;
+export const Select = styled.select`
+  
+  outline: none;
+  padding: 16px 20px;
+  width: 100%;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: #f0f2f5;
+  border: none;
+  color: gray;
+  color: ${({ hasValue }) => (hasValue ? 'black' : 'gray')};
+  option {
+    color: black; /* Cor padrão para todas as opções */
+  }
+`;
+
 
 export const Content = styled.div`
-  gap: 15px;
+  gap: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +37,7 @@ export const Content = styled.div`
   background-color: white;
   max-width: 350px;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 20px;
 `;
 
 export const Label = styled.label`
@@ -64,5 +80,10 @@ export const Logo_centro = styled.img`
   margin-left: 0px;
   margin-top: 0px;
 `;
+
+export const SelecionaEstado= styled.img`
+  color: #363636;
+`;
+
 
  
