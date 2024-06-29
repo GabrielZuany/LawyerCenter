@@ -37,13 +37,13 @@ const Profile = () => {
     }
     const data = await response.json();
     console.log('API Response:', data);
-      setProfileAge(data.age);
-      setProfileCity(data.city);
-      setProfileEmail(data.email);
-      setProfileDescription(data.description);
-      setProfileName(data.name);
-      setProfileState(data.state);
-      setProfileRegisteredAt(data.registrationDate);
+    setProfileAge(data.age);
+    setProfileCity(data.city);
+    setProfileEmail(data.email);
+    setProfileDescription(data.description);
+    setProfileName(data.name);
+    setProfileState(data.state);
+    setProfileRegisteredAt(data.registrationDate);
   };
   useEffect(() => {
     fetchLawyer();
@@ -82,7 +82,9 @@ const Profile = () => {
         </C.InfoSobre>
         <C.InfoAtuacao>
           <C.InfoTitle>Registrado desde:</C.InfoTitle>
-          <C.InfoText>{profileRegisteredAt.replace('T00:00:00', '').replace('-', '/').replace('-', '/')}</C.InfoText>
+          <C.InfoText>
+            {profileRegisteredAt.replace('T00:00:00', '').replace('-', '/').replace('-', '/')}
+          </C.InfoText>
         </C.InfoAtuacao>
       </C.Container>
     </>
