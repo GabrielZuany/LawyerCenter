@@ -257,3 +257,21 @@ export const ContainerPagination = styled.div`
   margin-top: 1.5vh;
   margin-left: 71.6vh;
 `;
+
+
+export const CardVazio = styled.button`
+  border: none; 
+  background-color: #F5F5F5;
+  margin-left: 15vh;
+  margin-top: 2vh;
+  display: flex;
+  flex-direction: line;
+  align-items: left;
+  width: 90%;
+  height: 26vh;
+  max-width: 144.4vh;
+  padding: 4vh;
+  max-padding: 5vh;
+  border-radius: 1vh; // Altere para o raio de borda desejado
+  gap: 1.2vh;
+`;
