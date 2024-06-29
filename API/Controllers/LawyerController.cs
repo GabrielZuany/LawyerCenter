@@ -219,7 +219,7 @@ namespace API.Controllers
                 _logger.LogError("Category not found!");
                 return StatusCode(500);
             }
-            return Ok(category.Alias);
+            return Ok(category);
         }
     }
 }
