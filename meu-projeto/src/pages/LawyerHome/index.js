@@ -21,6 +21,7 @@ const LawyerHome = () => {
 
   const [name, setName] = useState("Loading...");
   const [lawyerCategoryId, setLawyerCategoryId] = useState("");
+  const [profileType, setProfileType] = useState("Loading...");
   const [email, setEmail] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
@@ -48,6 +49,11 @@ const LawyerHome = () => {
       setDescription(data.description);
       setAge(data.age);
       setProfileRegisteredAt(data.registrationDate);
+
+      const categoryResponse = await fetch(`http://localhost:5001/api/v1/lawyer/get-category?lawyerId=${lawyerId}`);
+      if (!categoryResponse.ok) { throw new Error('Network response was not ok'); }
+      const categoryResponseData = await categoryResponse.json();
+      setProfileType(categoryResponseData.alias);
   };
   useEffect(() => {
     fetchLawyers();
@@ -76,7 +82,7 @@ const LawyerHome = () => {
                 <C.ProfileImage src={leojardim} alt="Leo Jardim" />
                 <C.ProfileName>
                   {name}
-                  <C.ProfileDetails>Especialista em direito criminal</C.ProfileDetails>
+                  <C.ProfileDetails>Área: {profileType}</C.ProfileDetails>
                 </C.ProfileName>
                 
             </C.ProfileCard>
