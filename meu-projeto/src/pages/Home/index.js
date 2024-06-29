@@ -45,7 +45,7 @@ const Home = () => {
   const fetchLawyers = async () => {
     const skip = (currentPage - 1) * 3;
     const take = 3;
-    const url = `http://localhost:5001/api/v1/lawyer/getfiltered?skip=${skip}&take=${take}&category=${tipo}&state=${estado}`;
+    const url = `http://localhost:5001/api/v1/lawyer/get-filtered?skip=${skip}&take=${take}&category=${tipo}&state=${estado}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Network response was not ok');

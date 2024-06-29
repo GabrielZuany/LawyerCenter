@@ -44,6 +44,11 @@ const Profile = () => {
     setProfileName(data.name);
     setProfileState(data.state);
     setProfileRegisteredAt(data.registrationDate);
+    
+    const categoryResponse = await fetch(`http://localhost:5001/api/v1/lawyer/get-category?lawyerId=${lawyerId}`);
+    if (!categoryResponse.ok) { throw new Error('Network response was not ok'); }
+    const categoryResponseData = await categoryResponse.json();
+    setProfileType(categoryResponseData.alias);
   };
   useEffect(() => {
     fetchLawyer();
