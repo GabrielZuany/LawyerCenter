@@ -30,5 +30,12 @@ namespace API.Repository
             await _context.SaveChangesAsync();
             return clientLawyer;
         }
+
+        public async Task<IEnumerable<ClientLawyer>> GetRelationBetween(Guid? lawyerId, Guid? clientId)
+        {
+            return await _context.ClientLawyers
+                .Where(l => l.ClientId == clientId && l.LawyerId == lawyerId)
+                .ToListAsync();
+        }
     }
 }

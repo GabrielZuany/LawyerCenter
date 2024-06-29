@@ -9,5 +9,6 @@ namespace API.Repository.Interfaces
         Task<IEnumerable<ClientLawyer>> GetByLawyerId(Guid id);
         Task<ClientLawyer> Create(ClientLawyer clientLawyer);
         Task<ClientLawyer> Delete(Guid id);
+        Task<IEnumerable<ClientLawyer>> GetRelationBetween(Guid? lawyerId, Guid? clientId);
     }
 }
