@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Pagination from './components/pagination';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./components/styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
 import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
@@ -24,7 +24,7 @@ const Home = () => {
   const handleEstadoChange = (e) => {
     setEstado(e.target.value);
   };
-
+  
   const handleTipoChange = (e) => {
     setTipo(e.target.value);
   };
@@ -52,7 +52,6 @@ const Home = () => {
     }
     const data = await response.json();
     
-
     console.log('API Response:', data);
     setId(data.map(lawyer => lawyer.id));
     setIdades(data.map(lawyer => lawyer.age));
@@ -64,6 +63,8 @@ const Home = () => {
   useEffect(() => {
     fetchLawyers();
   }, [estado, tipo, currentPage]);
+
+  let { clientId } = useParams();
 
   const renderProfileCard = (index) => (
     <C.ProfileCard key={index}>
@@ -97,7 +98,7 @@ const Home = () => {
             <C.SearchSelecionavel>
                 {/* Adicione estes elementos de seleção para o estado e tipo */}
                 <C.Select value={estado} onChange={handleEstadoChange}>
-                <option value="">Selecione o estado</option>
+                <option value="">Todos os estados</option>
                 <option value="AC">AC</option>
                 <option value="AL">AL</option>
                 <option value="AP">AP</option>
@@ -130,7 +131,12 @@ const Home = () => {
               <C.SearchTitle>Tipo</C.SearchTitle>
               <C.SearchSelecionavel>
                 <RadioButton>
-                  <input type="radio" name="tipo" value="Cível" onChange={handleTipoChange} />
+                  <input type="radio" name="tipo" value="" onChange={handleTipoChange} />
+                  Todos os tipos
+                  <span className="checkmark"></span>
+                </RadioButton>
+                <RadioButton>
+                  <input type="radio" name="tipo" value="Cível" onChange={handleTipoChange}/>
                   Cível
                   <span className="checkmark"></span>
                 </RadioButton>

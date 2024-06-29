@@ -6,6 +6,7 @@ import logo from "../../img/logo.png";
 import styled from 'styled-components';
 import { GlobalStyle } from './styles';
 import leojardim from "../../img/leojardim.png";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { signout } = useAuth();
@@ -52,7 +53,11 @@ const Profile = () => {
     <>
       <GlobalStyle />
       <C.LogoutButton onClick={handleLogout}>SAIR</C.LogoutButton>
-      <C.logo src = {logo} alt="logo" title="logo"/>
+      <C.logo
+          src={logo}
+          alt="logo"
+          onClick={() => navigate("/home/" + null)} // Adicione esta linha
+        />
       <C.TopBar />
       <C.Container>
         <C.ProfileCard>
