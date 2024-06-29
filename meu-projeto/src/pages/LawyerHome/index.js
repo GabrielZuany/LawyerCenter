@@ -18,7 +18,41 @@ const LawyerHome = () => {
 
   let { lawyerId } = useParams();
   console.log(lawyerId);
+
+  const [name, setName] = useState("Loading...");
+  const [lawyerCategoryId, setLawyerCategoryId] = useState("");
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [description, setDescription] = useState("");
+  const [age, setAge] = useState(0);
+  const [profileRegisteredAt, setProfileRegisteredAt] = useState("01/01/2021");
   
+  const fetchLawyers = async () => {
+      
+      const url =  `http://localhost:5001/api/v1/lawyer/getbyid?id=${lawyerId}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      
+      console.log('API Response:', data);
+      setName(data.name);
+      setLawyerCategoryId(data.lawyerCategoryId);
+      setState(data.state);
+      setCity(data.city);
+      setPhoto(data.photo);
+      setEmail(data.email);
+      setDescription(data.description);
+      setAge(data.age);
+      setProfileRegisteredAt(data.registrationDate);
+  };
+  useEffect(() => {
+    fetchLawyers();
+  }, []);
+
   return (
     <>
       <GlobalStyle />
@@ -41,38 +75,32 @@ const LawyerHome = () => {
             <C.ProfileCard>
                 <C.ProfileImage src={leojardim} alt="Leo Jardim" />
                 <C.ProfileName>
-                    Leo Jardins
-                    <C.ProfileDetails>Especialista em direito criminal</C.ProfileDetails>
+                  {name}
+                  <C.ProfileDetails>Especialista em direito criminal</C.ProfileDetails>
                 </C.ProfileName>
                 
             </C.ProfileCard>
             <C.InfosCard> 
                 <C.Info>
                     <C.InfoTitle>Email:</C.InfoTitle>
-                    <C.InfoText>leojardim@gmail.com</C.InfoText>
+                    <C.InfoText>{email}</C.InfoText>
                     <C.InfoTitle>Idade:</C.InfoTitle>
-                    <C.InfoText>37 anos</C.InfoText>
+                    <C.InfoText>{age} anos</C.InfoText>
                     <C.InfoTitle>Cidade:</C.InfoTitle>
-                    <C.InfoText>Jaguaré - ES</C.InfoText>
+                    <C.InfoText>{city} - {state}</C.InfoText>
                 </C.Info>
             </C.InfosCard>
             <C.InfoSobre>
-   
                     <C.InfoTitle>Sobre:</C.InfoTitle>
-                    <C.InfoText>Ele comegou com seis anos, como recreacdo, e nesse periodo ele jogava na linha. Depois ele foi para o gol e ndo saiu mais. Ai colocamos ele no Botafogo-
-                        SP, porque ele comegou a levar mais a sério, mesmo novo, sé que ele tinha que passar por um aprendizado. Levamos ele para o Botafogo por conta do
-                        treinador de goleiros, o Leandro Franco.Ele comegou com seis anos, como recreacdo, e nesse periodo ele jogava na linha. Depois ele foi para o gol e ndo saiu mais. Ai colocamos ele no Botafogo-
-                        SP, porque ele comegou a levar mais a sério, mesmo novo, sé que ele tinha que passar por um aprendizado. Levamos ele para o Botafogo por conta do
-                        treinador de goleiros, o Leandro Franco.Ele comegou com seis anos, como recreacdo, e nesse periodo ele jogava na linha. Depois ele foi para o gol e ndo saiu mais. Ai colocamos ele no Botafogo-
-                        SP, porque ele comegou a levar mais a sério, mesmo novo, sé que ele tinha que passar por um aprendizado. Levamos ele para o Botafogo por conta do
-                        treinador de goleiros, o Leandro Franco.
+                    <C.InfoText>{description}
                     </C.InfoText>
             </C.InfoSobre>
             <C.InfoAtuacao>
                 <C.Info>
                     <C.InfoTitle>Áreas de atuação:</C.InfoTitle>
-                    <C.InfoText>-Direito criminal</C.InfoText>
-                    <C.InfoText>-Direito do consumidor</C.InfoText>
+                    <C.InfoText>
+                      {profileRegisteredAt.replace('T00:00:00', '').replace('-', '/').replace('-', '/')}
+                    </C.InfoText>
                 </C.Info>
             </C.InfoAtuacao>
         </C.Container>

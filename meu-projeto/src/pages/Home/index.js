@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Pagination from './components/pagination';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./components/styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
 import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
@@ -24,7 +24,7 @@ const Home = () => {
   const handleEstadoChange = (e) => {
     setEstado(e.target.value);
   };
-
+  
   const handleTipoChange = (e) => {
     setTipo(e.target.value);
   };
@@ -34,7 +34,8 @@ const Home = () => {
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
 
-  const totalPages = 9;
+  const totalPages = 6;
+  const [id, setId] = useState();
   const [idade, setIdades] = useState([32, 31, 37]);
   const [nome, setNomes] = useState(["Loading...", "Loading...", "Loading..."]);
   const [cidade, setCidades] = useState(["Loading...", "Loading...", "Loading..."]);
@@ -50,7 +51,9 @@ const Home = () => {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    
     console.log('API Response:', data);
+    setId(data.map(lawyer => lawyer.id));
     setIdades(data.map(lawyer => lawyer.age));
     setNomes(data.map(lawyer => lawyer.name));
     setCidades(data.map(lawyer => lawyer.city));
@@ -60,6 +63,25 @@ const Home = () => {
   useEffect(() => {
     fetchLawyers();
   }, [estado, tipo, currentPage]);
+
+  let { clientId } = useParams();
+
+  const renderProfileCard = (index) => (
+    <C.ProfileCard key={index}>
+      <C.ProfileImage src={index === 0 ? leojardim : index === 1 ? dvd : maicon} alt={nome[index]} />
+      <C.ProfileName>
+        {nome[index]}
+        <C.ProfileDetails>{idade[index]} anos</C.ProfileDetails>
+        <C.ProfileDetails>{cidade[index]}, {uf[index]}</C.ProfileDetails>
+        <C.Button onClick={() => navigate('/profile/' + id[index])}>Visualizar Perfil</C.Button>
+      </C.ProfileName>
+      <C.ProfileDescription>{descricao[index]}</C.ProfileDescription>
+    </C.ProfileCard>
+  );
+
+  const cardVazio = () =>(
+    <C.CardVazio></C.CardVazio>
+  );
 
   return (
     <>
@@ -76,7 +98,7 @@ const Home = () => {
             <C.SearchSelecionavel>
                 {/* Adicione estes elementos de seleção para o estado e tipo */}
                 <C.Select value={estado} onChange={handleEstadoChange}>
-                <option value="">Selecione o estado</option>
+                <option value="">Todos os estados</option>
                 <option value="AC">AC</option>
                 <option value="AL">AL</option>
                 <option value="AP">AP</option>
@@ -109,7 +131,12 @@ const Home = () => {
               <C.SearchTitle>Tipo</C.SearchTitle>
               <C.SearchSelecionavel>
                 <RadioButton>
-                  <input type="radio" name="tipo" value="Cível" onChange={handleTipoChange} />
+                  <input type="radio" name="tipo" value="" onChange={handleTipoChange} />
+                  Todos os tipos
+                  <span className="checkmark"></span>
+                </RadioButton>
+                <RadioButton>
+                  <input type="radio" name="tipo" value="Cível" onChange={handleTipoChange}/>
                   Cível
                   <span className="checkmark"></span>
                 </RadioButton>
@@ -152,48 +179,17 @@ const Home = () => {
           </C.SearchFiltro>
         </C.SearchCard>
         <C.Container>
-          {/* Exemplo de perfil para Leo Jardins */}
-            <C.ProfileCard>
-              <C.ProfileImage src={leojardim} alt="Leo Jardins" />
-              <C.ProfileName>
-                {nome[0]}
-                <C.ProfileDetails>{idade[0]} anos</C.ProfileDetails>
-                <C.ProfileDetails>{cidade[0]}, {uf[0]}</C.ProfileDetails>
-                <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
-              </C.ProfileName>
-              <C.ProfileDescription>
-                  {descricao[0]}
-              </C.ProfileDescription>
-            </C.ProfileCard>
-          
-          {/* Exemplo de perfil para David Correa */}
-          <C.ProfileCard>
-              <C.ProfileImage src={dvd} alt="David Correa" />
-              <C.ProfileName>
-                {nome[1]}
-                <C.ProfileDetails>{idade[1]} anos</C.ProfileDetails>
-                <C.ProfileDetails>{cidade[1]}, {uf[1]}</C.ProfileDetails>
-                {/* MUDAR DEPOIS, ESTA INDO PARA A TELA DO ADVOGADO */}
-                <C.Button onClick={() => navigate('/lawyerHome')}>Visualizar Perfil</C.Button>
-              </C.ProfileName>
-              <C.ProfileDescription>{descricao[1]}</C.ProfileDescription>
-              
-          </C.ProfileCard>
-          
-          {/* Exemplo de perfil para David Correa */}
-          <C.ProfileCard>
-            <C.ProfileImage src={maicon} alt="Maicon" />
-            <C.ProfileName>
-              {nome[2]}
-              <C.ProfileDetails>{idade[2]} anos</C.ProfileDetails>
-              <C.ProfileDetails>{cidade[2]}, {uf[2]}</C.ProfileDetails>
-              <C.Button onClick={() => navigate('/profile')}>Visualizar Perfil</C.Button>
-            </C.ProfileName>
-            <C.ProfileDescription>{descricao[2]}</C.ProfileDescription>
-          </C.ProfileCard>
-          <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange}/>          
+        {!(nome.length >= 1) && cardVazio()}
+        {nome.length >= 1 && renderProfileCard(0)}
+
+        {!(nome.length >= 2) && cardVazio()}
+        {nome.length >= 2 && renderProfileCard(1)}
+        
+        {!(nome.length > 2) && cardVazio()}
+        {nome.length > 2 && renderProfileCard(2)}
+        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange}/>
         </C.Container>       
-      </C.TelaInteira>
+        </C.TelaInteira>
       
     </>
   );

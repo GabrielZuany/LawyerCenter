@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ContainerPagination, PageButton, ArrowButton } from './styles';
 
-const Pagination = ({ totalPages, currentPage, onPageChange } ) => {
-  // const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({ totalPages, currentPage, onPageChange }) => {
+  const maxButtons = 5;
 
   const handlePageClick = (pageNumber) => {
     onPageChange(pageNumber);
@@ -10,27 +10,39 @@ const Pagination = ({ totalPages, currentPage, onPageChange } ) => {
 
   const getPageNumbers = () => {
     let startPage, endPage;
-    if (totalPages <= 5) {
-      // less than 5 total pages, so show all pages
+
+    if (totalPages <= maxButtons) {
       startPage = 1;
       endPage = totalPages;
     } else {
-      // more than 5 total pages, so calculate start and end pages
-      if (currentPage <= 3) {
+      if (currentPage <= Math.ceil(maxButtons / 2)) {
         startPage = 1;
-        endPage = 5;
-      } else if (currentPage + 2 >= totalPages) {
-        startPage = totalPages - 4;
+        endPage = maxButtons;
+      } else if (currentPage > totalPages - Math.floor(maxButtons / 2)) {
+        startPage = totalPages - maxButtons + 1;
         endPage = totalPages;
       } else {
-        startPage = currentPage - 2;
-        endPage = currentPage + 2;
+        startPage = currentPage - Math.floor(maxButtons / 2);
+        endPage = currentPage + Math.floor(maxButtons / 2);
       }
     }
+
+    if (startPage < 1) {
+      startPage = 1;
+      endPage = maxButtons;
+    }
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = totalPages - maxButtons + 1;
+      if (startPage < 1) startPage = 1;
+    }
+
     return Array.from({ length: (endPage + 1) - startPage }, (_, index) => startPage + index);
   };
 
   const pageNumbers = getPageNumbers();
+  const isLastButtonVisible = pageNumbers[pageNumbers.length - 1] === totalPages;
 
   return (
     <ContainerPagination>
@@ -51,7 +63,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange } ) => {
       ))}
       <ArrowButton
         onClick={() => handlePageClick(currentPage + 1)}
-        disabled={currentPage === totalPages}
+        disabled={isLastButtonVisible || currentPage === totalPages}
       >
         &raquo;
       </ArrowButton>

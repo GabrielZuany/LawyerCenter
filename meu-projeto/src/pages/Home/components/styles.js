@@ -27,9 +27,9 @@ export const Select = styled.select`
   padding: 1vh; // Adiciona algum preenchimento para torná-lo maior
   border-radius: 0.6vh; // Adiciona bordas arredondadas
 `;
+
 export const SearchCard = styled.div`
-  height: 44.5vh;
-  display: flex;
+  height: 48.5vh;
   flex-direction: line;
   margin-left: 3vh;
   margin-top: 2vh;
@@ -41,6 +41,8 @@ export const SearchCard = styled.div`
   border-radius: 1vh; // Altere para o raio de borda desejado
   margin-bottom: 55vh;
 `;
+
+
 
 export const SearchFiltro = styled.div`
   margin-left: 1vh;
@@ -256,4 +258,22 @@ export const ArrowButton = styled.button`
 export const ContainerPagination = styled.div`
   margin-top: 1.5vh;
   margin-left: 71.6vh;
+`;
+
+
+export const CardVazio = styled.button`
+  border: none; 
+  background-color: #F5F5F5;
+  margin-left: 15vh;
+  margin-top: 2vh;
+  display: flex;
+  flex-direction: line;
+  align-items: left;
+  width: 90%;
+  height: 26vh;
+  max-width: 144.4vh;
+  padding: 4vh;
+  max-padding: 5vh;
+  border-radius: 1vh; // Altere para o raio de borda desejado
+  gap: 1.2vh;
 `;

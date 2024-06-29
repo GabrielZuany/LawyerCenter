@@ -27,7 +27,7 @@ export const Select = styled.select`
 
 
 export const Content = styled.div`
-  gap: 13px;
+  gap: 8px;
   display: flex;
   align-items: center;
   justify-content: center;

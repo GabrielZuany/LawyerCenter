@@ -174,16 +174,52 @@ namespace API.Controllers
             return Ok(lawyer);
         }
 
-        [HttpGet("getfiltered")]
-        public async Task<IActionResult> GetFiltered(int skip, int take, string? category, string? state)
+        [HttpGet("get-filtered")]    
+        public async Task<IActionResult> GetPageFiltered(int skip, int take, string? category, string? state)
         {
-            var lawyers = await _lawyerRepository.GetFiltered(skip, take, category, state);
+            var lawyers = await _lawyerRepository.GetPageFiltered(skip, take, category, state);
             if (lawyers == null)
             {
                 _logger.LogError("Lawyers not found!");
                 return StatusCode(500);
             }            
             return Ok(lawyers);
+        }
+
+        [HttpGet("get-all-filtered")]
+        public async Task<IActionResult> GetFiltered(string? category, string? state)
+        {
+            var lawyers = await _lawyerRepository.GetAllFiltered(category, state);
+            if (lawyers == null)
+            {
+                _logger.LogError("Lawyers not found!");
+                return StatusCode(500);
+            }
+            return Ok(lawyers);
+        }
+
+        [HttpGet("get-all-filtered-count")]
+        public async Task<IActionResult> GetAllFilteredCount(string? category, string? state)
+        {
+            return Ok(await _lawyerRepository.CountAllFiltered(category, state));
+        }
+
+        [HttpGet("get-category")]
+        public async Task<IActionResult> GetCategory(Guid lawyerId)
+        {
+            Lawyer? lawyer = await _lawyerRepository.GetById(lawyerId);
+            if (lawyer == null)
+            {
+                _logger.LogError("Lawyer not found!");
+                return StatusCode(500);
+            }
+            LawyerCategory? category = await _lawyerCategoryRepository.Get(lawyer.LawyerCategoryId);
+            if (category == null)
+            {
+                _logger.LogError("Category not found!");
+                return StatusCode(500);
+            }
+            return Ok(category.Alias);
         }
     }
 }

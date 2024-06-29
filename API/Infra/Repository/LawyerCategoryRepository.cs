@@ -18,6 +18,10 @@ namespace API.Infra.Repository
         public async Task<LawyerCategory?> Get(string alias){
             return await _context.LawyerCategories.FirstOrDefaultAsync(l => l.Alias == alias);
         }
+        public async Task<LawyerCategory?> Get(Guid id)
+        {
+            return await _context.LawyerCategories.FirstOrDefaultAsync(i => i.Id == id);
+        }
         public async Task Update(LawyerCategory lawyerCategory){
             _context.Update(lawyerCategory);
             await _context.SaveChangesAsync();

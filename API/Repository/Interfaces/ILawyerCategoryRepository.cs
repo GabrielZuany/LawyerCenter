@@ -7,6 +7,7 @@ namespace API.Repository.Interfaces
         Task Create(LawyerCategory lawyerCategory);
         Task<LawyerCategory?> Get(int typeInt);
         Task<LawyerCategory?> Get(string alias);
+        Task<LawyerCategory?> Get(Guid id);
         Task Update(LawyerCategory lawyerCategory);
         Task Delete(LawyerCategory lawyerCategory);
     }

@@ -2,6 +2,7 @@ using API.Infra;
 using API.Model;
 using API.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace API.Infra.Repository
 {
@@ -42,7 +43,7 @@ namespace API.Infra.Repository
             return await _context.Lawyers.FirstOrDefaultAsync(l => l.Id == id);
         }
 
-        public async Task<IEnumerable<Lawyer>> GetFiltered(int skip, int take, string? category, string? state)
+        public async Task<IEnumerable<Lawyer>> GetPageFiltered(int skip, int take, string? category, string? state)
         {
             if (category == null && state == null)
                 return await _context
@@ -74,6 +75,26 @@ namespace API.Infra.Repository
                             .Skip(skip)
                             .Take(take)
                             .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Lawyer>> GetAllFiltered(string? category, string? state)
+        {
+            if (category == null && state == null) return await _context.Lawyers.ToListAsync();
+            if (category == null) return await _context.Lawyers.Where(l => l.State == state).ToListAsync();
+
+            LawyerCategory? lawyerCategory = await _context.LawyerCategories.FirstOrDefaultAsync(lc => lc.Alias == category);
+            if (lawyerCategory == null) return new List<Lawyer>();
+
+            Guid categoryId = lawyerCategory.Id;
+            if (state == null) return await _context .Lawyers.Where(l => l.LawyerCategoryId == categoryId).ToListAsync();
+
+            return await _context .Lawyers.Where(l => l.LawyerCategoryId == categoryId && l.State == state).ToListAsync();
+        }
+
+        public async Task<int> CountAllFiltered(string? category, string? state)
+        {
+            var lawyers = await this.GetAllFiltered(category, state);
+            return lawyers == null ? 0 : lawyers.Count();
         }
     }
 }
