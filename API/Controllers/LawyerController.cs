@@ -174,7 +174,7 @@ namespace API.Controllers
             return Ok(lawyer);
         }
 
-        [HttpGet("getfiltered")]
+        [HttpGet("getfiltered")]    
         public async Task<IActionResult> GetFiltered(int skip, int take, string? category, string? state)
         {
             var lawyers = await _lawyerRepository.GetFiltered(skip, take, category, state);
@@ -184,6 +184,24 @@ namespace API.Controllers
                 return StatusCode(500);
             }            
             return Ok(lawyers);
+        }
+
+        [HttpGet("getcategory")]
+        public async Task<IActionResult> GetCategory(Guid lawyerId)
+        {
+            Lawyer? lawyer = await _lawyerRepository.GetById(lawyerId);
+            if (lawyer == null)
+            {
+                _logger.LogError("Lawyer not found!");
+                return StatusCode(500);
+            }
+            LawyerCategory? category = await _lawyerCategoryRepository.Get(lawyer.LawyerCategoryId);
+            if (category == null)
+            {
+                _logger.LogError("Category not found!");
+                return StatusCode(500);
+            }
+            return Ok(category.Alias);
         }
     }
 }
