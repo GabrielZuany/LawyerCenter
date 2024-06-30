@@ -38,7 +38,7 @@ const Signup = () => {
   };
   const navigate = useNavigate();
 
-  // const { signup } = useAuth();
+  const { signup } = useAuth();
 
   // const handleSignup = (isAdvogado = false) => {
   //   let nomeToUse = isAdvogado ? nomeAdvogado : nome;
@@ -95,6 +95,10 @@ const Signup = () => {
 
     if (isAdvogado) {
       url += "/api/v1/lawyer/create";
+      if (!nomeAdvogado || !emailAdvogado || !cpfAdvogado || !cidadeAdvogado || !estadoAdvogado || !senhaAdvogado) {
+        setErrorAdvogado("Preencha todos os campos");
+        return;
+      }
       body = {
         name: nomeAdvogado,
         cpf: cpfAdvogado,
@@ -111,6 +115,10 @@ const Signup = () => {
       };
     } else {
       url += "/api/v1/client/create";
+      if (!nome || !email || !cpf || !cidade || !estado || !senha) {
+        setError("Preencha todos os campos");
+        return;
+      }
       body = {
         name: nome,
         cpf: cpf,

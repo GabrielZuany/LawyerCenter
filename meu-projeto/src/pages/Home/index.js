@@ -3,9 +3,10 @@ import Pagination from './components/pagination';
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./components/styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
-import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
+// import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
 import dvd from "../../img/dvd.png";
 import maicon from "../../img/maicon.png"
+import random from "../../img/random.png";
 import logo from "../../img/logo.png";
 import { GlobalStyle } from './components/styles'; // Importe o GlobalStyle aqui
 import { RadioButton } from "./components/styles";
@@ -34,7 +35,7 @@ const Home = () => {
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
 
-  const totalPages = 6;
+  
   const [id, setId] = useState();
   const [idade, setIdades] = useState([32, 31, 37]);
   const [nome, setNomes] = useState(["Loading...", "Loading...", "Loading..."]);
@@ -42,6 +43,13 @@ const Home = () => {
   const [uf, setUfs] = useState(["Loading...", "Loading...", "Loading..."]);
   const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."
     ]);
+  const fetchPages = async () => {
+    const url2 = `http://localhost:5001/api/v1/lawyer/get-all-filtered?category=${tipo}&state=${estado}`
+    const response2 = await fetch(url2);
+    const data2 = await response2.json();
+    console.log(data2.length);  
+    let totalPages = data2.length;
+  }
   const fetchLawyers = async () => {
     const skip = (currentPage - 1) * 3;
     const take = 3;
@@ -62,13 +70,14 @@ const Home = () => {
   };
   useEffect(() => {
     fetchLawyers();
+    fetchPages();
   }, [estado, tipo, currentPage]);
 
   let { clientId } = useParams();
 
   const renderProfileCard = (index) => (
     <C.ProfileCard key={index}>
-      <C.ProfileImage src={index === 0 ? leojardim : index === 1 ? dvd : maicon} alt={nome[index]} />
+      <C.ProfileImage src={index === 0 ? random : index === 1 ? dvd : maicon} alt={nome[index]} />
       <C.ProfileName>
         {nome[index]}
         <C.ProfileDetails>{idade[index]} anos</C.ProfileDetails>
