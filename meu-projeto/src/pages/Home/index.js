@@ -3,10 +3,7 @@ import Pagination from './components/pagination';
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./components/styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
-// import leojardim from "../../img/leojardim.png"; // Corrija os nomes das imagens
-import dvd from "../../img/dvd.png";
-import maicon from "../../img/maicon.png"
-import random from "../../img/random.png";
+import random from "../../img/random.png"
 import logo from "../../img/logo.png";
 import { GlobalStyle } from './components/styles'; // Importe o GlobalStyle aqui
 import { RadioButton } from "./components/styles";
@@ -34,22 +31,33 @@ const Home = () => {
     signout(); // Isso irá limpar quaisquer tokens de autenticação
     navigate('/signin'); // Isso irá redirecionar o usuário para a tela de login
   };
-
   
+  const photoNull = "https://cloud-object-storage-cos-standard-bucket-1.s3.us-south.cloud-object-storage.appdomain.cloud/random.png";
+
+  var [totalPages, setTotalPages] = useState(0); // Adicione o estado totalPages
   const [id, setId] = useState();
   const [idade, setIdades] = useState([32, 31, 37]);
   const [nome, setNomes] = useState(["Loading...", "Loading...", "Loading..."]);
   const [cidade, setCidades] = useState(["Loading...", "Loading...", "Loading..."]);
   const [uf, setUfs] = useState(["Loading...", "Loading...", "Loading..."]);
-  const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."
-    ]);
-  const fetchPages = async () => {
-    const url2 = `http://localhost:5001/api/v1/lawyer/get-all-filtered?category=${tipo}&state=${estado}`
-    const response2 = await fetch(url2);
-    const data2 = await response2.json();
-    console.log(data2.length);  
-    let totalPages = data2.length;
-  }
+  const [descricao, setDescricoes] = useState(["Loading...", "Loading...", "Loading..."]);
+  const [photo, setPhoto] = useState(["Loading...", "Loading...", "Loading..."]);
+
+    const fetchPages = async () => {
+      const url2 = `http://localhost:5001/api/v1/lawyer/get-all-filtered?category=${tipo}&state=${estado}`;
+      try {
+        const response2 = await fetch(url2);
+        if (!response2.ok) {
+          throw new Error('Erro ao obter dados da API');
+        }
+        const data2 = await response2.json();
+        setTotalPages(Math.ceil(data2.length / 3));
+        console.log('Total de páginas:', totalPages); // Verifique o valor atribuído
+      } catch (error) {
+        console.error('Erro na requisição da API:', error);
+      }
+    };
+    
   const fetchLawyers = async () => {
     const skip = (currentPage - 1) * 3;
     const take = 3;
@@ -67,17 +75,19 @@ const Home = () => {
     setCidades(data.map(lawyer => lawyer.city));
     setUfs(data.map(lawyer => lawyer.state));
     setDescricoes(data.map(lawyer => lawyer.description));
+    setPhoto(data.map(lawyer => lawyer.photo));
   };
   useEffect(() => {
     fetchLawyers();
     fetchPages();
-  }, [estado, tipo, currentPage]);
+  }, [estado, tipo, currentPage, totalPages]);
 
   let { clientId } = useParams();
 
   const renderProfileCard = (index) => (
     <C.ProfileCard key={index}>
-      <C.ProfileImage src={index === 0 ? random : index === 1 ? dvd : maicon} alt={nome[index]} />
+      {(photo[index] == null || photo[index] == "") && <C.ProfileImage src={`${photoNull}`} />}
+      {(photo[index] != "") && <C.ProfileImage src={`${photo[index]}`} />}
       <C.ProfileName>
         {nome[index]}
         <C.ProfileDetails>{idade[index]} anos</C.ProfileDetails>

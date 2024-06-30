@@ -97,7 +97,7 @@ export const ProfileImage = styled.img`
   width: 10vh;
   height: 10vh;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
 `;
 
 export const ProfileName = styled.p`

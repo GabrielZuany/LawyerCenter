@@ -4,7 +4,6 @@ import * as C from "./styles"; // Certifique-se de que os componentes estão exp
 import logo from "../../img/logo.png";
 import styled from 'styled-components';
 import { GlobalStyle } from './styles';
-import leojardim from "../../img/leojardim.png";
 import React, { useState, useEffect } from 'react';
 
 const LawyerHome = () => {
@@ -67,19 +66,19 @@ const LawyerHome = () => {
       <C.TopBar />
       <C.TelaInteira>
         <C.Chat> 
-            <C.ChatCard>
-                <C.ElementChat>Editar perfil</C.ElementChat>
-            </C.ChatCard>
-            <C.ChatCard>
-                <C.ElementChat>Chat</C.ElementChat>
-            </C.ChatCard>
-            <C.ChatCard>
-                <C.ElementChat>Solicitações</C.ElementChat>
-            </C.ChatCard>
+          <C.ChatCard>
+              <C.ElementChat>Editar perfil</C.ElementChat>
+          </C.ChatCard>
+          <C.ChatCard>
+              <C.ElementChat>Chat</C.ElementChat>
+          </C.ChatCard>
+          <C.ChatCard>
+              <C.ElementChat>Solicitações</C.ElementChat>
+          </C.ChatCard>
         </C.Chat>
         <C.Container>
             <C.ProfileCard>
-                <C.ProfileImage src={leojardim} alt="Leo Jardim" />
+                <C.ProfileImage src={photo}/>
                 <C.ProfileName>
                   {name}
                   <C.ProfileDetails>Área: {profileType}</C.ProfileDetails>

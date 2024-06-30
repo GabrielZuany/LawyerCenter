@@ -234,7 +234,7 @@ export const ChatCard = styled.div`
   max-padding: 5vh;
   background-color: #DCDCDC; // Altere para a cor de fundo desejada
   box-shadow: 0vh 0.8vh 1vh rgba(0, 0, 0, 0.1); // Altere para a sombra desejada
-  border-radius: 8vh; // Altere para o raio de borda desejado
+  border-radius: 1vh; // Altere para o raio de borda desejado
   cursor: pointer;
 `;
 

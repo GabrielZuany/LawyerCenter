@@ -5,7 +5,7 @@ import * as C from "./styles"; // Certifique-se de que os componentes estão exp
 import logo from "../../img/logo.png";
 import styled from 'styled-components';
 import { GlobalStyle } from './styles';
-import leojardim from "../../img/leojardim.png";
+// import leojardim from "../../img/leojardim.png";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
@@ -25,6 +25,7 @@ const Profile = () => {
   const [profileState, setProfileState] = useState("");
   const [profileDescription, setProfileDescription] = useState("");
   const [profileRegisteredAt, setProfileRegisteredAt] = useState("01/01/2021");
+  const [profilePhoto, setProfilePhoto] = useState("");
 
 
   let { lawyerId } = useParams();
@@ -44,7 +45,8 @@ const Profile = () => {
     setProfileName(data.name);
     setProfileState(data.state);
     setProfileRegisteredAt(data.registrationDate);
-    
+    setProfilePhoto(data.photo);
+
     const categoryResponse = await fetch(`http://localhost:5001/api/v1/lawyer/get-category?lawyerId=${lawyerId}`);
     if (!categoryResponse.ok) { throw new Error('Network response was not ok'); }
     const categoryResponseData = await categoryResponse.json();
@@ -54,6 +56,7 @@ const Profile = () => {
     fetchLawyer();
   }, []);
 
+  const photoNull = "https://cloud-object-storage-cos-standard-bucket-1.s3.us-south.cloud-object-storage.appdomain.cloud/random.png";
   return (
     <>
       <GlobalStyle />
@@ -66,7 +69,8 @@ const Profile = () => {
       <C.TopBar />
       <C.Container>
         <C.ProfileCard>
-          <C.ProfileImage src={leojardim} alt="Leo Jardim" />
+          {(profilePhoto == null || profilePhoto == "") && <C.ProfileImage src={`${photoNull}`} />}
+          {(profilePhoto != "") && <C.ProfileImage src={`${profilePhoto}`} />}
           <C.ProfileName>
             {profileName}
             <C.ProfileDetails>Área: {profileType}</C.ProfileDetails>
