@@ -171,7 +171,25 @@ namespace API.Controllers
                 _logger.LogError("Lawyer not found!");
                 return StatusCode(500);
             }
-            return Ok(lawyer);
+            string decryptedCpf = await _dataEncryptionSevice.DecryptAsync(Convert.FromBase64String(lawyer.Cpf));
+            var newLawyer = new Lawyer(
+                lawyer.Id,
+                lawyer.Name,
+                decryptedCpf,
+                lawyer.ProfessionalId,
+                lawyer.LawyerCategoryId,
+                lawyer.Postalcode,
+                lawyer.State,
+                lawyer.City,
+                lawyer.RegistrationDate,
+                lawyer.LastUpdate,
+                lawyer.Photo,
+                lawyer.Email,
+                "",
+                lawyer.Description,
+                lawyer.Age
+            );
+            return Ok(newLawyer);
         }
 
         [HttpGet("get-filtered")]    
