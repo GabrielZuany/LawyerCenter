@@ -66,10 +66,10 @@ export const Strong = styled.strong`
 `;
 
 export const Logozinho = styled.img`
+  margin-left: 15px;
   width: 170px; /* Defina a largura desejada */
   height: 32px; /* Mantém a proporção da imagem */
   display: block; /* Garante que a imagem seja um bloco */
-  margin-left: 0px;/
   margin-top: 0px;
 `;
 

@@ -51,7 +51,7 @@ export const Logozinho = styled.img`
   width: 170px; /* Defina a largura desejada */
   height: 32px; /* Mantém a proporção da imagem */
   display: block; /* Garante que a imagem seja um bloco */
-  margin-left: 20px;
+  margin-left: 15px;
   margin-top: 0px;
 `;
 
