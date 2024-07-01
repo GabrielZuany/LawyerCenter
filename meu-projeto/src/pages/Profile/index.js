@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useNavigate, useParams} from "react-router-dom";
+import { useHref, useNavigate, useParams} from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles"; // Certifique-se de que os componentes estão exportados corretamente aqui
 import logo from "../../img/logo.png";
@@ -75,7 +75,7 @@ const Profile = () => {
             {profileName}
             <C.ProfileDetails>Área: {profileType}</C.ProfileDetails>
           </C.ProfileName>
-          <C.Button onClick={() => navigate('/profile')}>Entrar em contato</C.Button>
+          <C.Button onClick={() => {window.open('https://mail.google.com', '_blank');}}>Entrar em contato</C.Button>
         </C.ProfileCard>
         <C.InfosCard>
           <C.InfoTitle>Email:</C.InfoTitle>
