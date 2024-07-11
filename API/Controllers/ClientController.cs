@@ -21,10 +21,16 @@ namespace API.Controllers
             _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+        private static bool ValidCPF(string cpf)
+        {
+            if (cpf.Any(c => !char.IsDigit(c))) { return false; }
+            return true;
+        }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]ClientViewModel clientViewModel)
         {
+            if (!ValidCPF(clientViewModel.Cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(clientViewModel.Password);
@@ -58,6 +64,7 @@ namespace API.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(string email, string password, [FromBody]ClientViewModel newClientViewModel)
         {
+            if (!ValidCPF(newClientViewModel.Cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
@@ -95,13 +102,17 @@ namespace API.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string email, string cpf, string password)
         {
+            if (!ValidCPF(cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
                 byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf);
                 string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
                 string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
+
                 var old = await _clientRepository.Get(email, encryptedCpfString, encryptedPasswordString);
+                if (old == null) { return NotFound("Client not found."); }
+
                 await _clientRepository.Delete(old!);
                 return Ok();
             }catch(Exception e)
@@ -114,6 +125,7 @@ namespace API.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> Get(string? email, string? cpf, string password)
         {
+            if (!ValidCPF(cpf ?? "1")) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
@@ -121,6 +133,7 @@ namespace API.Controllers
                 string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
                 string encryptedCpfString = Convert.ToBase64String(encryptedCpf);
                 var client = await _clientRepository.Get(email, encryptedCpfString, encryptedPasswordString);
+                if (client == null) { return NotFound("Client not found."); }
                 return Ok(client);
             }catch(Exception e)
             {

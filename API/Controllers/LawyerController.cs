@@ -24,9 +24,16 @@ namespace API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        private static bool ValidCPF(string cpf)
+        {
+            if (cpf.Any(c => !char.IsDigit(c))) { return false; }
+            return true;
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]LawyerViewModel lawyerViewModel)
         {
+            if (!ValidCPF(lawyerViewModel.Cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryAlias);  
@@ -74,6 +81,7 @@ namespace API.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody]LawyerViewModel lawyerViewModel)
         {
+            if (!ValidCPF(lawyerViewModel.Cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 LawyerCategory? lc =  await _lawyerCategoryRepository.Get(lawyerViewModel.CategoryAlias);
@@ -118,6 +126,7 @@ namespace API.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string email, string cpf, string password)
         {
+            if (!ValidCPF(cpf)) return BadRequest("CPF label must contain only numeric values.");
             try
             {
                 byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
@@ -142,6 +151,8 @@ namespace API.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> Get(string email, string cpf, string password)
         {
+            if (!ValidCPF(cpf)) return BadRequest("CPF label must contain only numeric values.");
+
             byte[] encryptedPassword = await _dataEncryptionSevice.EncryptAsync(password);
             byte[] encryptedCpf = await _dataEncryptionSevice.EncryptAsync(cpf);
             string encryptedPasswordString = Convert.ToBase64String(encryptedPassword);
@@ -158,8 +169,21 @@ namespace API.Controllers
         [HttpGet("getpage")]
         public async Task<IActionResult> GetPage(int skip, int take)
         {
-            var lawyers = await _lawyerRepository.GetPage(skip, take);
-            return Ok(lawyers);
+            if (skip < 0 || take < 0) 
+            { 
+                _logger.LogError($"Skip and Take must be positive values.");
+                return BadRequest();
+            }
+            try
+            {
+                var lawyers = await _lawyerRepository.GetPage(skip, take);
+                return Ok(lawyers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message}");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("getbyid")]
@@ -195,6 +219,12 @@ namespace API.Controllers
         [HttpGet("get-filtered")]    
         public async Task<IActionResult> GetPageFiltered(int skip, int take, string? category, string? state)
         {
+            if (skip < 0 || take < 0)
+            {
+                _logger.LogError($"Skip and Take must be positive values.");
+                return BadRequest();
+            }
+
             var lawyers = await _lawyerRepository.GetPageFiltered(skip, take, category, state);
             if (lawyers == null)
             {
