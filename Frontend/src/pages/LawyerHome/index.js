@@ -102,7 +102,7 @@ const LawyerHome = () => {
             </C.InfoSobre>
             <C.InfoAtuacao>
                 <C.Info>
-                    <C.InfoTitle>Áreas de atuação:</C.InfoTitle>
+                    <C.InfoTitle>Registrado desde:</C.InfoTitle>
                     <C.InfoText>
                       {profileRegisteredAt.replace('T00:00:00', '').replace('-', '/').replace('-', '/')}
                     </C.InfoText>
